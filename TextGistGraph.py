@@ -20,7 +20,23 @@ def visualizeSingleDoc():
     #TODO:0. get system time for json file; 1. identify entities;2. identify comparative sentences; 3. generate json file
     name = 'data1'
     helper.main()
-    return render_template('GistGraph.html',name=name)
+    intervals = [
+        1,2,3,4,5,
+        1,2,3,4,5,
+        1,2,3,4,5,
+        1,2,3,4,5,
+        1,2,3,4,5,
+        1,2,3,4,5,
+        1,2,3,4,5,
+        1,2,3,4,5,
+        1,2,3,4,5,
+        1,2,3,4,5,
+        1,2,3,4,5,
+        1,2,3,4,5,
+        1,2
+
+    ];
+    return render_template('GistGraph.html',name=name, intervals= intervals)
 
 @app.route("/SingleDocVisualize/<string:name>")
 def SingleDocVisualize(name):

@@ -86,7 +86,7 @@
 
             // Remove all the temporary labels.
             svg.selectAll('text.temp').remove();
-
+            var intervals = {{ intervals }};
             // Do the layout
             narrative = d3.layout.narrative()
                 .scenes(scenes)
@@ -96,7 +96,7 @@
                 .labelSize([250,15])
                 .scenePadding([5,sceneWidth/2,5,sceneWidth/2])
                 .labelPosition('left')
-                .layout();
+                .layout(intervals);
 
             // Get the extent so we can re-size the SVG appropriately.
             svg.attr('height', narrative.extent()[1]);
@@ -188,6 +188,21 @@
                         });
 
                 });
+
+            //draw chapter lines
+            //TODO:https://www.sitepoint.com/creating-simple-line-bar-charts-using-d3-js/
+            //http://stackoverflow.com/questions/21181417/d3-js-vertical-line-separating-year
+                chapterOffsets = [500, 1300, 1800];
+                chapterLineHeight = height
+                    svg.append("line")
+                    .attr("x1", 1300)  //<<== change your code here
+                    .attr("y1", 0)
+                    .attr("x2", 1300)  //<<== and here
+                    .attr("y2", chapterLineHeight)
+                    .style("stroke-width", 0.5)
+                    .style("stroke", "grey")
+                    .style("fill", "none");
+
 
         });
 

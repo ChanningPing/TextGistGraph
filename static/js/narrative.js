@@ -696,7 +696,7 @@ narrative.introductions = function() {
 // Compute the narrative layout. This should be called after all options and
 // data have been set and before attempting to use the layout's output for
 // display purposes.
-narrative.layout = function() {
+narrative.layout = function(intervals) {
 	computeSceneCharacters();
 	computeCharacterGroups();
 	setSceneGroups();
@@ -705,7 +705,7 @@ narrative.layout = function() {
 	computeGroupPositions();
 	computeCharacterGroupPositions();
 	sortGroupAppearances();
-	computeSceneTiming();
+	computeSceneTiming(intervals);
 	computeAppearancePositions();
 	computeScenePositions();
 	createIntroductionNodes();
@@ -1053,25 +1053,10 @@ function sortGroupAppearances() {
 // Compute the scene timing.
 //
 // TODO: support dates
-function computeSceneTiming() {
+function computeSceneTiming(intervals) {
     console.log('timing');
 	var duration = 1;
-    var intervals = [
-        1,2,3,4,5,
-        1,2,3,4,5,
-        1,2,3,4,5,
-        1,2,3,4,5,
-        1,2,3,4,5,
-        1,2,3,4,5,
-        1,2,3,4,5,
-        1,2,3,4,5,
-        1,2,3,4,5,
-        1,2,3,4,5,
-        1,2,3,4,5,
-        1,2,3,4,5,
-        1,2
-
-    ];
+    
     var pointer=0;
 	scenes.forEach(function(scene){
 		scene.start = scene.start || duration;
