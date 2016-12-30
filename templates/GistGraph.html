@@ -145,11 +145,13 @@
               .offset([-10, 0])
               .html(function(d) {
                 //return "<strong>Frequency:</strong> <span style='color:red'>" + d.x + "</span>";
+                  //TODO: load sentence data here, rewrite the scene data to include sentences
                   return "<tspan>" + "The Poisson distribution can also be used for the number of events in other specified intervals such as distance, area or volume.For instance, an individual keeping track of the amount of mail they receive each day may notice that they receive an average number of 4 letters per day." + "</tspan>";
               })
             tip.direction('sw')
             svg.call(tip);
 
+            //prepare highlighting all paths through a scene
 
 
             // Draw the scenes
@@ -185,7 +187,7 @@
                         ;
 
             // Draw appearances
-            svg.selectAll('.scene').selectAll('.appearance').data(function(d){
+              svg.selectAll('.scene').selectAll('.appearance').data(function(d){
                 return d.appearances;
             }).enter().append('circle')
                 .attr('cx', function(d){
@@ -202,7 +204,6 @@
                 });
 
             // Draw links
-
             svg.selectAll('.link').data(narrative.links()).enter()
                 .append('path')
                 .attr('class', function(d) {
