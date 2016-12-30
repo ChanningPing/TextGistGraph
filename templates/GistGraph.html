@@ -10,7 +10,44 @@
 	rect {
 		fill: none;
 		stroke: #000;
+        pointer-events: all;
 	}
+    rect:hover {
+      fill: orangered ;
+    }
+    .d3-tip {
+      line-height: 1;
+      font-weight: bold;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 2px;
+    }
+
+    /* Creates a small triangle extender for the tooltip */
+    .d3-tip:after {
+      box-sizing: border-box;
+      display: inline;
+      font-size: 10px;
+      width: 100%;
+      line-height: 1;
+      color: rgba(0, 0, 0, 0.8);
+      content: "\25BC";
+      position: absolute;
+      text-align: center;
+    }
+
+    /* Style northward tooltips differently */
+    .d3-tip.n:after {
+      margin: -1px 0 0 0;
+      top: 100%;
+      left: 0;
+    }
+    tspan {
+        display:block;
+        width:300px;
+        word-wrap:break-word;
+    }
 	path {
 		fill: none;
 		stroke-width: 2;
@@ -48,6 +85,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-shim.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.0/es6-shim.js"></script>
     <script src="static/js/d3.min.js"></script>
+    <script src="static/js/d3.tip.js"></script>
 
 	<script src="static/js/narrative.js"></script>
 
@@ -101,6 +139,19 @@
             // Get the extent so we can re-size the SVG appropriately.
             svg.attr('height', narrative.extent()[1]);
 
+            //prepare the tooltip of each scene
+            var tip = d3.tip()
+              .attr('class', 'd3-tip')
+              .offset([-10, 0])
+              .html(function(d) {
+                //return "<strong>Frequency:</strong> <span style='color:red'>" + d.x + "</span>";
+                  return "<tspan>" + "The Poisson distribution can also be used for the number of events in other specified intervals such as distance, area or volume.For instance, an individual keeping track of the amount of mail they receive each day may notice that they receive an average number of 4 letters per day." + "</tspan>";
+              })
+            tip.direction('sw')
+            svg.call(tip);
+
+
+
             // Draw the scenes
             svg.selectAll('.scene').data(narrative.scenes()).enter()
                 .append('g').attr('class', 'scene')
@@ -118,7 +169,20 @@
                         .attr('y', 0)
                         .attr('x', 0)
                         .attr('rx', 3)
-                        .attr('ry', 3);
+                        .attr('ry', 3)
+                        .on("mousemove", function(){
+                             if (window.scrollX<100) {
+                                 tip.direction('se');
+                             }else{
+                                 tip.direction('sw');
+                             }
+                         })
+                        .on('mouseover', tip.show)
+                        .on('mouseout', tip.hide)
+                        //when clicked, highlight all flows throught this scene
+
+
+                        ;
 
             // Draw appearances
             svg.selectAll('.scene').selectAll('.appearance').data(function(d){
@@ -138,6 +202,7 @@
                 });
 
             // Draw links
+
             svg.selectAll('.link').data(narrative.links()).enter()
                 .append('path')
                 .attr('class', function(d) {
@@ -189,20 +254,91 @@
 
                 });
 
-            //draw chapter lines
-            //TODO:https://www.sitepoint.com/creating-simple-line-bar-charts-using-d3-js/
-            //http://stackoverflow.com/questions/21181417/d3-js-vertical-line-separating-year
-                chapterOffsets = [500, 1300, 1800];
-                chapterLineHeight = height
-                    svg.append("line")
-                    .attr("x1", 1300)  //<<== change your code here
-                    .attr("y1", 0)
-                    .attr("x2", 1300)  //<<== and here
-                    .attr("y2", chapterLineHeight)
+
+            //draw chapter lines-way 3
+
+            //get defaults
+            var size = narrative.extent();//width and height of the graph
+            var labelSize = narrative.labelSize();
+            console.log('in html,size[1]='+size[1]+",labelSize[1]="+labelSize[1]+',size[0]='+size[0]+',labelSize[0]='+labelSize[0]);
+
+            chapterLineHeight = 300;
+            //receive from the caller function:
+            chapters = [
+                {'x':1, 'label':'chapter1'},
+                {'x':7, 'label':'chapter2'},
+                {'x':16, 'label':'chapter3'},
+            ];
+            //chapterOffsets = [1, 4, 16];//offsets of the chapter (ith sentence)
+
+            //compute the x-start and scale
+            var chapterStarts = [];
+            var duration = 0;
+            for(var i=0;i<chapters.length;i++){
+                duration += chapters[i].x;
+                chapterStarts.push(duration);
+                //console.log('chapter offset='+chapters[i].x+',start='+chapterStarts[i]);
+            }
+
+            duration = intervals.reduce(function(a, b) { return a + b; }, 0) + 1;
+            console.log('final duration='+duration);
+            scale = (size[0]-labelSize[0])/duration;
+            console.log('final scale='+scale);
+            for(var i=0;i<chapters.length;i++){
+                //console.log('inital final x='+chapters[i].x);
+                //console.log('final start='+chapterStarts[i]);
+                chapters[i].x = scale * chapterStarts[i] + labelSize[0];
+                console.log('final x='+chapters[i].x);
+            }
+            //draw lines based on re-calculated x of chapter lines
+
+            var line = {
+                'x1':(function(d) { return d.x; }),
+                'y1':(function(d) { return 0; }),
+                'x2':(function(d) { return d.x; }),
+                'y2':(function(d) { return chapterLineHeight-10; }),
+                'label':(function(d) { return d.label; })
+                }
+
+
+            var label = svg.selectAll(".labels")
+                  .data(chapters)
+                  .enter();
+
+                label.append("svg:line")
+                        .attr("x1", line.x1)
+                        .attr("y1", line.y1)
+                        .attr("x2", line.x2)
+                        .attr("y2", line.y2)
                     .style("stroke-width", 0.5)
                     .style("stroke", "grey")
                     .style("fill", "none");
-
+                label.append("text")
+                 .attr("x", line.x2)
+                 .attr("y", line.y2)
+                 //.attr("dy", ".35em")
+                 //.attr("transform", "rotate(315)")
+                 .style("text-anchor", "middle")
+                 .style("fill", "grey")
+                 .text(line.label);
+            //draw the sentences x-axis
+              sentences = [{'x':10,'y':250},{'x':20,'y':250},{'x':30,'y':250},{'x':40,'y':250},{'x':50,'y':250}];
+              svg.selectAll('.sents').data(sentences).enter()
+                .append('g').attr('class', 'sents')
+                    .attr('transform', function(d){
+                            var x,y;
+                            x = Math.round(d.x)+0.5;
+                            y = Math.round(d.y)+0.5;
+                            return 'translate('+[x,y]+')';
+                        })
+                    .append('rect')
+                        .attr('width', 5)
+                        .attr('height', 10)
+                        .attr('y', 0)
+                        .attr('x', 0)
+                        .attr('rx', 3)
+                        .attr('ry', 3)
+                    ;
 
         });
 

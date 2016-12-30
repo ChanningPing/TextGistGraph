@@ -1067,8 +1067,11 @@ function computeSceneTiming(intervals) {
 		duration += scene.duration;
         //duration += Math.random() * (5);
 	});
-
+    console.log('in narrative.js, the duration='+duration);
 	scale = ((orientation === 'vertical') ? size[1]-labelSize[1] : size[0]-labelSize[0])/duration;
+    console.log('size[1]='+size[1]+",labelSize[1]="+labelSize[1]+',size[0]='+size[0]+',labelSize[0]='+labelSize[0]);
+    console.log('in narrative.js, the scale just calculated='+scale);
+    //return duration;
 }
 
 // Character positions
@@ -1141,6 +1144,7 @@ function computeScenePositions() {
 			scene.x = scene._x || Math.max(0, Math.min(size[0], avg - scene.width/2));
 			scene.y = scene._y || Math.max(0, Math.min(size[1], scale * scene.start + labelSize[1]));
 		} else {
+            console.log('in narrative.js, the scale ='+scale);
 			scene.x = scene._x || Math.max(0, Math.min(size[0], scale * scene.start + labelSize[0]));
 			scene.y = scene._y || Math.max(0, Math.min(size[1], avg - scene.height/2));
 		}
@@ -1207,6 +1211,7 @@ function createIntroductionNodes() {
 		introductions.push(introduction);
 
 	});
+
 }
 
 // Introduction positions
