@@ -6,15 +6,25 @@
 		font-family: "ProximaNova",Helvetica,Arial,sans-serif;
 		font-size: 12px;
 	}
+    text:hover {
+		font-family: "ProximaNova",Helvetica,Arial,sans-serif;
+		font-size: 12px;
+        font-weight: bold;
+        color: red;
+	}
 
 	rect {
 		fill: none;
 		stroke: #000;
         pointer-events: all;
 	}
+    rect.reselect-all:hover{
+        fill: green ;
+    }
     rect:hover {
       fill: orangered ;
     }
+
     .d3-tip {
       line-height: 1;
       font-weight: bold;
@@ -79,9 +89,88 @@
 	.intro text+text.light {
 	    fill: #3c6da8;
 	}
+    a {
+        color: black;
+        text-decoration: none;
+    }
+    a:focus {
+        box-shadow: 0 0 0 2px #f90; /* or whatever colour you'd prefer */
+        background-color: yellow;
+    }
+    div.blah {
+        position:fixed;
+        top: 0; /*[wherever you want it]*/
+        left:0; /*[wherever you want it]*/
+}
+
 </style>
 
 <body>
+    <div rows="4" cols="100">
+<a id="s1" href="#s1"> 1ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s2" href="#s2"> 2ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s3" href="#s3"> 3ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s4" href="#s4"> 4ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s5" href="#s5"> 5ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s6" href="#s6"> 6ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s7" href="#s7"> 7ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s8" href="#s8"> 8ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s9" href="#s9"> 9ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s10" href="#s10">10ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s11" href="#s11"> 11ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s12" href="#s12"> 12ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s13" href="#s13"> 13ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s14" href="#s14"> 14ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s15" href="#s15"> 15ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s16" href="#s16"> 16ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s17" href="#s17"> 17ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s18" href="#s18"> 18ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s19" href="#s19"> 19ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+<a id="s20" href="#s20"> 20ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+
+    </div>
+    <input type="button" onclick="myFunction()" value="Get focus on 6">
+    <a href="#s20">jump.</a>
+    <script>
+    function myFunction() {
+            //setTimeout(function() {window.scrollTo(0, top);},1)
+            document.getElementById("s6").focus();
+            document.querySelector('#s6').scrollIntoView({
+                behavior: 'smooth'
+            });
+    }
+    </script>
+    <input type="button" onclick="myFunction2()" value="Get focus on 13">
+    <script>
+    function myFunction2() {
+        //var top = document.getElementById('s10').offsetTop; //Getting Y of target element
+        console.log('top='+top);
+        //setTimeout(function() {window.scrollTo(0, top);},1)
+        //document.getElementById("#s10").focus();
+        //window.scrollBy(0,top,'smooth');
+        document.getElementById("s13").focus();
+        document.querySelector('#s13').scrollIntoView({
+            behavior: 'smooth'
+        });
+        //document.getElementById ("#s10").scrollIntoView (true);
+    }
+    </script>
+    <input type="button" onclick="myFunction3()" value="Get focus on 19">
+    <a href="#s20">jump.</a>
+    <script>
+    function myFunction3() {
+        //var top = document.getElementById('s10').offsetTop; //Getting Y of target element
+        console.log('top='+top);
+        //setTimeout(function() {window.scrollTo(0, top);},1)
+        //document.getElementById("#s10").focus();
+        //window.scrollBy(0,top,'smooth');
+        document.getElementById("s19").focus();
+        document.querySelector('#s19').scrollIntoView({
+            behavior: 'smooth'
+        });
+        //document.getElementById ("#s10").scrollIntoView (true);
+    }
+    </script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-shim.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.0/es6-shim.js"></script>
     <script src="static/js/d3.min.js"></script>
@@ -109,7 +198,15 @@
             svg = d3.select("body").append('svg')
                 .attr('id', 'narrative-chart')
                 .attr('width', width)
-                .attr('height', height);
+                .attr('height', height)
+                .on("click", function(d){
+                    console.log('clicked the blank space!');
+                    svg.selectAll('.link')
+                            .style('opacity',1);
+
+                })
+
+            ;
 
             // Calculate the actual width of every character label.
             scenes.forEach(function(scene){
@@ -151,7 +248,105 @@
             tip.direction('sw')
             svg.call(tip);
 
-            //prepare highlighting all paths through a scene
+            //prepare drag
+            var paths = narrative.links();//store the path information into global variable, modifiable.
+
+            var drag = d3.behavior.drag()
+                    .on('dragstart',function(){
+                      d3.event.sourceEvent.stopPropagation();
+                    })
+                    .on("drag", function(d) {
+                        var x = d.x;//x coordinate remains the same
+                        var y = d3.event.y;
+                        //change the rect and circle of the scene
+                        d3.select(this).attr("transform","translate("+x+","+y+")");
+
+                        //change the paths related to the scene
+                        //store the y-coordinate of the characters in this scene
+                        var y_map={};//id map of the characters in this scene
+                        for(var i=0;i<d.appearances.length;i++){
+                                y_map[d.appearances[i].character.id]=d.appearances[i].y;
+                                console.log('the character id ='+d.characters[i].id+", the y-axis="+d.appearances[i].y);
+                        }
+
+                        //DONE: copy the path coordinates to a global dataset, which is modifiable.
+                        var M;
+                        svg.selectAll('.link')
+                                .filter(function(d1) { return d1.target.scene == d || d1.source.scene == d; })
+                                     .attr('d',function(d1){
+                                         if (d1.target.scene == d ) {
+                                             //source position remains the same
+                                             x0 = (d1.source.scene) ? d1.source.scene.x + d1.source.x : d1.source.x;
+                                             y0 = (d1.source.scene) ? d1.source.scene.y + d1.source.y : d1.source.y;
+                                             //target position changes to the new scene position
+                                             x1 = (d1.target.scene) ? d1.target.scene.x + d1.target.x : d1.target.x;
+                                             //y1 = d3.event.y;
+                                             y1 = y_map[d1.character.id]+y;
+                                             if(d1.target.scene)  d1.target.scene.y =y1-d1.target.y;
+                                             curvature=0.5;
+                                             ci = d3.interpolateNumber(x0, x1);
+                                            cx0 = ci(curvature);
+                                            cy0 = y0;
+                                            cx1 = ci(1-curvature);
+                                            cy1 = y1;
+                                            M = "M" + x0 + "," + y0 +
+                                            "C" + cx0 + "," + cy0 +
+                                            " " + cx1 + "," + cy1 +
+                                            " " + x1 + "," + y1;
+                                             //update the d1.
+                                             return M;
+                                         }else if(d1.source.scene == d  ){
+                                             //only source y changes
+                                             x0 = (d1.source.scene) ? d1.source.scene.x + d1.source.x : d1.source.x;
+                                             y0 =  y_map[d1.character.id]+y;
+                                             y1 = (d1.target.scene) ? d1.target.scene.y + d1.target.y : d1.target.y;
+                                             x1 = (d1.target.scene) ? d1.target.scene.x + d1.target.x : d1.target.x;
+                                             if(d1.source.scene)  d1.source.scene.y =y0 - d1.source.y;
+                                             curvature=0.5;
+                                             ci = d3.interpolateNumber(x0, x1);
+                                            cx0 = ci(curvature);
+                                            cy0 = y0;
+                                            cx1 = ci(1-curvature);
+                                            cy1 = y1;
+                                             M = "M" + x0 + "," + y0 +
+                                            "C" + cx0 + "," + cy0 +
+                                            " " + cx1 + "," + cy1 +
+                                            " " + x1 + "," + y1;
+                                            //path_key = d1.source.character.id+"_"+d1.target.character.id+"_"+d1.character.id;
+                                            // changed_paths[path_key] = M;
+
+                                             return M;
+                                         }
+
+
+                                     } )
+
+                            //get all the charaters in this scene
+                            var id_map={};//id map of the characters in this scene
+                            for(var i=0;i<d.characters.length;i++){
+                                id_map[d.characters[i].id]=1;
+                            }
+                            svg.selectAll('.link')
+                                     .style('opacity',function(d){
+                                         if (d.source.character.id in id_map || d.target.character.id in id_map) {
+                                             return 1;
+                                         }else{
+                                             return 0.2;
+                                         }
+                                     })
+                    })
+
+                    .on("dragend",function(d){
+
+                        svg.selectAll('.link')
+                            .style('opacity',1);
+
+                    })
+                    ;
+
+
+
+
 
 
             // Draw the scenes
@@ -163,6 +358,62 @@
                             y = Math.round(d.y)+0.5;
                             return 'translate('+[x,y]+')';
                         })
+                    .call(drag)
+                    .on("mousemove", function(d){
+                             if (window.scrollX<100) {
+                                 tip.direction('se');
+                             }else{
+                                 tip.direction('sw');
+                             }
+
+                         })
+                        .on('mouseover', function(d){
+                            // append the y line
+                             var indent_x = narrative.introductions()? narrative.introductions()[0].x:0;
+                             d3.select(this)
+                                .append("line")
+                                .attr("class", "x")
+                                .style("stroke", "grey")
+                                .style("stroke-dasharray", "3,3")
+                                .style("opacity", 0.5)
+                                .attr("y1", 0)
+                                .attr("y2", function(d){
+                                    console.log('x='+d.x+",y="+d.y);
+                                    return height-d.y;
+                                })
+                                .attr("x1", 5)
+                                .attr("x2", 5)
+                             ;
+                               // .attr("x1", d.y-1.5)
+                               // .attr("x2", d.y-1.5);
+                            ;
+
+
+                            tip.show
+                        })
+                        .on('mouseout', function(d){
+                             d3.select(this)
+                                .select(".x").remove();
+                             tip.hide;
+                        })
+
+                        //when clicked, highlight all flows throught this scene
+                        .on("click", function(d){
+                            //get all the charaters in this scene
+                            var id_map={};//id map of the characters in this scene
+                            for(var i=0;i<d.characters.length;i++){
+                                id_map[d.characters[i].id]=1;
+                            }
+                            svg.selectAll('.link')
+                                     .style('opacity',function(d){
+                                         if (d.source.character.id in id_map || d.target.character.id in id_map) {
+                                             return 1;
+                                         }else{
+                                             return 0.2;
+                                         }
+                                     })
+                            d3.event.stopPropagation();
+                        })
                     .append('rect')
                         .attr('width', sceneWidth)
                         .attr('height', function(d){
@@ -172,19 +423,12 @@
                         .attr('x', 0)
                         .attr('rx', 3)
                         .attr('ry', 3)
-                        .on("mousemove", function(){
-                             if (window.scrollX<100) {
-                                 tip.direction('se');
-                             }else{
-                                 tip.direction('sw');
-                             }
-                         })
-                        .on('mouseover', tip.show)
-                        .on('mouseout', tip.hide)
-                        //when clicked, highlight all flows throught this scene
-
+                        //.call(drag)
 
                         ;
+
+
+
 
             // Draw appearances
               svg.selectAll('.scene').selectAll('.appearance').data(function(d){
@@ -201,22 +445,45 @@
                 })
                 .attr('class', function(d){
                     return 'appearance ' + d.character.affiliation;
-                });
+                })
+                .on("click", function(d){
+                            d3.event.stopPropagation();
+                })
+                ;
 
             // Draw links
-            svg.selectAll('.link').data(narrative.links()).enter()
+            svg.selectAll('.link').data(paths).enter()
                 .append('path')
                 .attr('class', function(d) {
                     return 'link ' + d.character.affiliation.toLowerCase();
                 })
-                .attr('d', narrative.link());
+                .attr('d', narrative.link())
+                .on("click", function(d){
+                            d3.event.stopPropagation();
+                });
 
             // Draw intro nodes
             svg.selectAll('.intro').data(narrative.introductions())
                 .enter().call(function(s){
                     var g, text;
 
-                    g = s.append('g').attr('class', 'intro');
+                    g = s.append('g').attr('class', 'intro')
+                        .on("mouseover", function(d) {
+                           d3.select(this).style("cursor", "pointer")
+                        })
+                        .on("click", function(d){
+                            console.log('click the intro nodes!');
+                            svg.selectAll('.link')
+                                     .style('opacity',function(d1){
+                                         if (d1.source.character.id == d.character.id ||
+                                            d1.target.character.id == d.character.id) {
+                                             return 1;
+                                         }else{
+                                             return 0.2;
+                                         }
+                                     })
+                            d3.event.stopPropagation();
+                        });
 
                     g.append('rect')
                         .attr('y', -4)
@@ -322,23 +589,66 @@
                  .style("text-anchor", "middle")
                  .style("fill", "grey")
                  .text(line.label);
+
+
             //draw the sentences x-axis
-              sentences = [{'x':10,'y':250},{'x':20,'y':250},{'x':30,'y':250},{'x':40,'y':250},{'x':50,'y':250}];
-              svg.selectAll('.sents').data(sentences).enter()
+            //TODO: has to change the x based on absolute #, calculate the x based on the absolute # and scale.
+            //TODO: also has to change the x of the scenes
+             var x_indent = narrative.introductions()? narrative.introductions()[0].x:0;
+              sentences = [{'x':10,'y':250},{'x':22,'y':250},{'x':34,'y':250},{'x':46,'y':250},{'x':58,'y':250},{'x':70,'y':250},{'x':82,'y':250},{'x':94,'y':250},{'x':106,'y':250},{'x':118,'y':250},{'x':130,'y':250},{'x':142,'y':250}];
+              sentences = [
+                {'id':1,'abs_start':1, 'sent_size':36, 'x':10,'y':250,'comparative': 0, 'sentence': 'sentence1'},
+                {'id':2,'abs_start':37, 'sent_size':5, 'x':22,'y':250,'comparative': 0, 'sentence': 'sentence2'},
+                {'id':3,'abs_start':99, 'sent_size':5, 'x':34,'y':250,'comparative': 0, 'sentence': 'sentence3'},
+                {'id':4,'abs_start':130, 'sent_size':5, 'x':46,'y':250,'comparative': 0, 'sentence': 'sentence4'},
+                {'id':5,'abs_start':148, 'sent_size':5, 'x':58,'y':250,'comparative': 1, 'sentence': 'sentence5'},
+                {'id':6,'abs_start':167, 'sent_size':5, 'x':70,'y':250,'comparative': 1, 'sentence': 'sentence6'},
+                {'id':7,'abs_start':192, 'sent_size':5, 'x':82,'y':250,'comparative': 0, 'sentence': 'sentence7'},
+                {'id':8,'abs_start':203, 'sent_size':5, 'x':94,'y':250,'comparative': 1, 'sentence': 'sentence8'},
+                {'id':9,'abs_start':241, 'sent_size':5, 'x':106,'y':250,'comparative': 0, 'sentence': 'sentence9'},
+                {'id':10,'abs_start':276, 'sent_size':5, 'x':118,'y':250,'comparative': 1, 'sentence': 'sentence10'},
+                {'id':11,'abs_start':299, 'sent_size':5, 'x':130,'y':250,'comparative': 1, 'sentence': 'sentence11'},
+                {'id':12,'abs_start':311, 'sent_size':5, 'x':142,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':13,'abs_start':324, 'sent_size':5, 'x':154,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':14,'abs_start':334, 'sent_size':5, 'x':166,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':15,'abs_start':356, 'sent_size':5, 'x':178,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':16,'abs_start':372, 'sent_size':5, 'x':190,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':17,'abs_start':389, 'sent_size':5, 'x':202,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':18,'abs_start':393, 'sent_size':5, 'x':214,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':19,'abs_start':421, 'sent_size':5, 'x':226,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':20,'abs_start':432, 'sent_size':5, 'x':238,'y':250,'comparative': 1, 'sentence': 'sentence'}
+
+                ];
+            //prepare the tooltip of each scene
+            var sent_tip = d3.tip()
+              .attr('class', 'd3-sent-tip')
+              .offset([-1, 0])
+              .html(function(d) {
+                //return "<strong>Frequency:</strong> <span style='color:red'>" + d.x + "</span>";
+                  //TODO: load sentence data here, rewrite the scene data to include sentences
+                  return  d.sentence ;
+              })
+            sent_tip.direction('nw');
+            svg.call(sent_tip);
+
+            svg.selectAll('.sents').data(sentences).enter()
                 .append('g').attr('class', 'sents')
                     .attr('transform', function(d){
                             var x,y;
-                            x = Math.round(d.x)+0.5;
+                            x = Math.round(d.x)+0.5 + x_indent;
                             y = Math.round(d.y)+0.5;
+
                             return 'translate('+[x,y]+')';
                         })
                     .append('rect')
-                        .attr('width', 5)
-                        .attr('height', 10)
+                        .attr('width', 10)
+                        .attr('height', 20)
                         .attr('y', 0)
                         .attr('x', 0)
                         .attr('rx', 3)
                         .attr('ry', 3)
+                        .on('mouseover', sent_tip.show)
+                        .on('mouseout', sent_tip.hide)
                     ;
 
         });
