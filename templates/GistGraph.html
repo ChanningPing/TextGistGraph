@@ -18,9 +18,7 @@
 		stroke: #000;
         pointer-events: all;
 	}
-    rect.reselect-all:hover{
-        fill: green ;
-    }
+
     rect:hover {
       fill: orangered ;
     }
@@ -93,6 +91,20 @@
         color: black;
         text-decoration: none;
     }
+    pre {
+        white-space: pre;           /* CSS 2.0 */
+        white-space: pre-wrap;      /* CSS 2.1 */
+        white-space: pre-line;      /* CSS 3.0 */
+        white-space: -pre-wrap;     /* Opera 4-6 */
+        white-space: -o-pre-wrap;   /* Opera 7 */
+        white-space: -moz-pre-wrap; /* Mozilla */
+        white-space: -hp-pre-wrap;  /* HP Printers */
+        word-wrap: break-word;      /* IE 5+ */
+            width: 98%;
+	}
+    span{
+        display: inline;
+    }
     a:focus {
         box-shadow: 0 0 0 2px #f90; /* or whatever colour you'd prefer */
         background-color: yellow;
@@ -102,61 +114,56 @@
         top: 0; /*[wherever you want it]*/
         left:0; /*[wherever you want it]*/
 }
+    div.scroll {
+        background-color: #f9f6e0;
+        height: 300px;
+        width: 100%;
+        overflow-y: scroll;
+}
 
 </style>
 
 <body>
-    <div rows="4" cols="100">
-<a id="s1" href="#s1"> 1ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s2" href="#s2"> 2ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s3" href="#s3"> 3ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s4" href="#s4"> 4ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s5" href="#s5"> 5ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s6" href="#s6"> 6ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s7" href="#s7"> 7ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s8" href="#s8"> 8ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s9" href="#s9"> 9ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s10" href="#s10">10ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s11" href="#s11"> 11ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s12" href="#s12"> 12ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s13" href="#s13"> 13ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s14" href="#s14"> 14ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s15" href="#s15"> 15ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s16" href="#s16"> 16ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s17" href="#s17"> 17ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s18" href="#s18"> 18ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s19" href="#s19"> 19ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
-<a id="s20" href="#s20"> 20ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss </a>
+    <div rows="4" cols="100" class = 'scroll'>
+        <pre id="textViewer" >
+             <a id="s1" href="#s1">1ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s2" href="#s2">2ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s3" href="#s3">3ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s4" href="#s4">4sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s5" href="#s5">5ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s6" href="#s6">6ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s7" href="#s7">7ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s8" href="#s8">8ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s9" href="#s9">9ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s10" href="#s10">10ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s11" href="#s11"> 11sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s12" href="#s12"> 12ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s13" href="#s13"> 13ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s14" href="#s14"> 14ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s15" href="#s15"> 15ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s16" href="#s16"> 16ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s17" href="#s17"> 17ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s18" href="#s18"> 18ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s19" href="#s19"> 19ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s20" href="#s20"> 20ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a>
+             <script>
+                 var intervals = {{ intervals|safe }};
+                 //console.log('text viewer!'+intervals_text.length)
+                var tv = document.getElementById('textViewer');
+                sentences = "";
+                for(var i=0;i<intervals.sentence.length;i++){
+                    console.log('id='+intervals.id[i]+',sentence='+intervals.sentence[i]);
+                    sentences += '<a id="'+intervals.id[i]+'" href="'+ intervals.id[i]+'">'+intervals.sentence[i]+'</a>';
+                }
+                tv.innerHTML = sentences;
+                 //below is only for test
+                 json_data = {{ data|safe }}
+                 for(var i=0;i<json_data.characters.length;i++){
+                     console.log("character id="+json_data.characters[i].id);
+                 }
+
+
+             </script>
+
+        </pre>
 
     </div>
-    <input type="button" onclick="myFunction()" value="Get focus on 6">
-    <a href="#s20">jump.</a>
+
+    <input type="button" onclick="myFunction()" value="Get focus on 1">
     <script>
     function myFunction() {
-            //setTimeout(function() {window.scrollTo(0, top);},1)
-            document.getElementById("s6").focus();
-            document.querySelector('#s6').scrollIntoView({
+             //setTimeout(function() {window.scrollTo(0, top);},1)
+            document.getElementById("s1").focus();
+            document.querySelector('#s1').scrollIntoView({
                 behavior: 'smooth'
             });
+
+
     }
     </script>
-    <input type="button" onclick="myFunction2()" value="Get focus on 13">
-    <script>
-    function myFunction2() {
-        //var top = document.getElementById('s10').offsetTop; //Getting Y of target element
-        console.log('top='+top);
-        //setTimeout(function() {window.scrollTo(0, top);},1)
-        //document.getElementById("#s10").focus();
-        //window.scrollBy(0,top,'smooth');
-        document.getElementById("s13").focus();
-        document.querySelector('#s13').scrollIntoView({
-            behavior: 'smooth'
-        });
-        //document.getElementById ("#s10").scrollIntoView (true);
-    }
-    </script>
-    <input type="button" onclick="myFunction3()" value="Get focus on 19">
-    <a href="#s20">jump.</a>
+
+    <input type="button" onclick="myFunction3()" value="Get focus on 492">
     <script>
     function myFunction3() {
         //var top = document.getElementById('s10').offsetTop; //Getting Y of target element
@@ -164,8 +171,8 @@
         //setTimeout(function() {window.scrollTo(0, top);},1)
         //document.getElementById("#s10").focus();
         //window.scrollBy(0,top,'smooth');
-        document.getElementById("s19").focus();
-        document.querySelector('#s19').scrollIntoView({
+        document.getElementById("s492").focus();
+        document.querySelector('#s492').scrollIntoView({
             behavior: 'smooth'
         });
         //document.getElementById ("#s10").scrollIntoView (true);
@@ -181,6 +188,7 @@
 	<script>
         console.log('{{ name }}');
         var fileName='static/data/'+ '{{ name }}' +'.json';
+        //console.log({{ intervals|safe }});
 
         d3.json(fileName, function(err, response){
             var svg, scenes, charactersMap, width, height, sceneWidth;
@@ -190,7 +198,8 @@
 
             // Some defaults
             sceneWidth = 10;
-            width = scenes.length * sceneWidth * 4;
+            //width = scenes.length * sceneWidth * 4;
+            width = scenes.length *sceneWidth*10;
             height = 600;
             labelSize = [150,15];
 
@@ -221,7 +230,8 @@
 
             // Remove all the temporary labels.
             svg.selectAll('text.temp').remove();
-            var intervals = {{ intervals }};
+            var intervals = {{ intervals|safe }};
+            console.log(intervals.start);
             // Do the layout
             narrative = d3.layout.narrative()
                 .scenes(scenes)
@@ -231,7 +241,7 @@
                 .labelSize([250,15])
                 .scenePadding([5,sceneWidth/2,5,sceneWidth/2])
                 .labelPosition('left')
-                .layout(intervals);
+                .layout(intervals.start);
 
             // Get the extent so we can re-size the SVG appropriately.
             svg.attr('height', narrative.extent()[1]);
@@ -240,12 +250,12 @@
             var tip = d3.tip()
               .attr('class', 'd3-tip')
               .offset([-10, 0])
-              .html(function(d) {
+              .html(function() {
                 //return "<strong>Frequency:</strong> <span style='color:red'>" + d.x + "</span>";
                   //TODO: load sentence data here, rewrite the scene data to include sentences
                   return "<tspan>" + "The Poisson distribution can also be used for the number of events in other specified intervals such as distance, area or volume.For instance, an individual keeping track of the amount of mail they receive each day may notice that they receive an average number of 4 letters per day." + "</tspan>";
               })
-            tip.direction('sw')
+            tip.direction('sw');
             svg.call(tip);
 
             //prepare drag
@@ -253,12 +263,11 @@
 
             var drag = d3.behavior.drag()
                     .on('dragstart',function(){
-                      d3.event.sourceEvent.stopPropagation();
+
                     })
-                    .on("drag", function(d) {
-                        var x = d.x;//x coordinate remains the same
-                        var y = d3.event.y;
-                        //change the rect and circle of the scene
+                    .on("drag", function(d,i) {
+                        var x = d.x;
+                        var y=d.y + d3.event.dy;
                         d3.select(this).attr("transform","translate("+x+","+y+")");
 
                         //change the paths related to the scene
@@ -334,12 +343,14 @@
                                              return 0.2;
                                          }
                                      })
+                            d3.event.sourceEvent.stopPropagation();
                     })
 
                     .on("dragend",function(d){
 
                         svg.selectAll('.link')
                             .style('opacity',1);
+                        d3.event.sourceEvent.stopPropagation();
 
                     })
                     ;
@@ -352,13 +363,13 @@
             // Draw the scenes
             svg.selectAll('.scene').data(narrative.scenes()).enter()
                 .append('g').attr('class', 'scene')
+                    .call(drag)
                     .attr('transform', function(d){
                             var x,y;
                             x = Math.round(d.x)+0.5;
                             y = Math.round(d.y)+0.5;
                             return 'translate('+[x,y]+')';
                         })
-                    .call(drag)
                     .on("mousemove", function(d){
                              if (window.scrollX<100) {
                                  tip.direction('se');
@@ -367,8 +378,9 @@
                              }
 
                          })
-                        .on('mouseover', function(d){
-                            // append the y line
+                    .on('mouseover', function(d){
+                             // append the y line
+                             tip.show();
                              var indent_x = narrative.introductions()? narrative.introductions()[0].x:0;
                              d3.select(this)
                                 .append("line")
@@ -384,17 +396,13 @@
                                 .attr("x1", 5)
                                 .attr("x2", 5)
                              ;
-                               // .attr("x1", d.y-1.5)
-                               // .attr("x2", d.y-1.5);
-                            ;
 
-
-                            tip.show
                         })
                         .on('mouseout', function(d){
+                            tip.hide();
                              d3.select(this)
                                 .select(".x").remove();
-                             tip.hide;
+
                         })
 
                         //when clicked, highlight all flows throught this scene
@@ -543,12 +551,14 @@
             var chapterStarts = [];
             var duration = 0;
             for(var i=0;i<chapters.length;i++){
-                duration += chapters[i].x;
-                chapterStarts.push(duration);
+                //duration += chapters[i].x;
+                chapterStarts.push(chapters[i].x);
                 //console.log('chapter offset='+chapters[i].x+',start='+chapterStarts[i]);
             }
 
-            duration = intervals.reduce(function(a, b) { return a + b; }, 0) + 1;
+            //duration = intervals.start.reduce(function(a, b) { return a + b; }, 0) + 1;
+            //TODO: change the duration to the maximum value of all sentences
+            duration = intervals.start[intervals.start.length-1]+1;
             console.log('final duration='+duration);
             scale = (size[0]-labelSize[0])/duration;
             console.log('final scale='+scale);
@@ -631,11 +641,16 @@
             sent_tip.direction('nw');
             svg.call(sent_tip);
 
+            //prepare the x, y of sentences
+            for(var i=0; i<sentences.length;i++){
+                sentences[i].x = scale * sentences[i].id + labelSize[0];
+            }
+
             svg.selectAll('.sents').data(sentences).enter()
                 .append('g').attr('class', 'sents')
                     .attr('transform', function(d){
                             var x,y;
-                            x = Math.round(d.x)+0.5 + x_indent;
+                            x = Math.round(d.x)+0.5 ;
                             y = Math.round(d.y)+0.5;
 
                             return 'translate('+[x,y]+')';
