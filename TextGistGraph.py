@@ -21,7 +21,9 @@ def visualizeSingleDoc():
     content = request.form['content']#get content of the paper
     timestamp = time.strftime("%Y%m%d_%H%M%S")#get current system time
     dataFile = 'file_'+timestamp + '.json'#use timestamp as data file name
-    helper.JsonResults(title, content)#use json to store intermediate data
+
+    result = helper.JsonResult( content)#use json to store intermediate data
+    #print(result)
 
     data = {
         "characters": [
@@ -601,7 +603,9 @@ def visualizeSingleDoc():
                 "RO1",
                 "GJD"
             ]
-        ]
+        ],
+        "JustTest": ['haha','hahahaha']
+
     }
 
     #TODO:0. get system time for json file; 1. identify entities;2. identify comparative sentences; 3. generate json file
