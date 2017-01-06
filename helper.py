@@ -3,8 +3,13 @@ import json
 import codecs
 import pickle
 import os
+import string
 import MSEntityLinking
 from settings import APP_STATIC
+
+daily_limit = 10000
+max_heading_length = 200
+characters_dict = {}
 
 def get_structured_content (content, c):
     '''
@@ -14,8 +19,11 @@ def get_structured_content (content, c):
     (1) chapters: a list of chapters, each chapter has (1) rank; (2) id; (3) heading
     (2) all_paragraphs: a list of paragraphs, each paragraph is a list of sentences, each sentence has (1) rank; (2) id; (3) text; (4) IsComparative
     '''
+
+    printable = set(string.printable)
+    content =  filter(lambda x: x in printable, content)
     # 1. remove extra line breaks
-    paragraphs = content.split('\n')  # break full text into natural paragraphs
+    paragraphs = content.split('\n') # break full text into natural paragraphs
     for index, paragraph in enumerate(paragraphs):
         paragraphs[index] = paragraphs[index].replace('\n', '').strip()  # remove extra '\n' in paragraphs
     paragraphs = [p for i, p in enumerate(paragraphs) if p != '']  # keeps only the non-empty paragraphs after strip()
@@ -38,7 +46,7 @@ def get_structured_content (content, c):
             sentence = {}
             sentence_count += 1
 
-            if s[0:1] == c and len(s)<200:
+            if s[0:1] == c and len(s) < max_heading_length:
                 ss[j] = s[1:]
                 chapter = {}
                 chapter['sentence_rank'] = sentence_count
@@ -63,45 +71,22 @@ def get_structured_content (content, c):
     return structured_content
 
 def get_entity_cooccurrence_in_paragraph(structured_content):
-    #TODO: combine paragraphs into 10k block for saving Microsoft Entity linking service limit
+    #TODO: combine paragraphs into 10k block for saving Microsoft Entity linking service limits
     paragraphs = structured_content['all_paragraphs']
-    characters_dict = {}
+
+    block = ''
+    prevOffset = 0
+
     for p in paragraphs:  # for each paragraph
-        entities = MSEntityLinking.entityOffsets(p['paragraph_info']['text'])  # get all its entities
-        print(entities)
-
-
-        if entities == 'error-001:invalid-characters': continue
+        if len(block + p['paragraph_info']['text']) <= daily_limit:
+            block += p['paragraph_info']['text']
+            print('block='+block)
+            continue
         else:
-            entities = json.loads(entities)
-            json_entities = entities['entities']
-            if json_entities:
-                # 1. get all characters, by storing entities into a dict
-                for entity in json_entities:
-                    entity_key = entity['wikipediaId'].replace(' ', '_')
-                    # if this is the first time the entity appears
-                    if entity_key in characters_dict:
-
-                        frequency = 0
-                        for m in entity['matches']:
-                            for e in m['entries']:
-                                characters_dict[entity_key]['offsets'].append(e['offset'])
-                                frequency += 1
-                        characters_dict[entity_key]['frequency'] += frequency
-                    else:#otherwise
-                        entity_value = {}
-                        entity_value['affiliation'] = 'light'
-                        entity_value['name'] = entity['name']
-                        offsets = []
-                        frequency = 0
-                        for m in entity['matches']:
-                            for e in m['entries']:
-                                offsets.append(e['offset'])
-                                frequency += 1
-                        entity_value['offsets'] = offsets
-                        entity_value['frequency'] = frequency
-                        characters_dict[entity_key] = entity_value
-
+            getEntityDictionary(block, prevOffset)
+            prevOffset = len(block)
+            block = p['paragraph_info']['text']
+    getEntityDictionary(block, prevOffset)
     characters = []
     for key, value in characters_dict.iteritems():
         character = {}
@@ -118,7 +103,44 @@ def get_entity_cooccurrence_in_paragraph(structured_content):
 
         # print(entities)
 
-
+def getEntityDictionary(block, prevOffset):
+    '''
+    :param block:  a block of combination of multiple paragraphs
+    :param currOffset: the current length of the last block
+    :return: modify the dict
+    '''
+    print('execute block!' + block +', with offset='+str(prevOffset))
+    entities = MSEntityLinking.entityOffsets(block)  # get all its entities
+    print('entities')
+    print(entities)
+    if entities != 'error-001:invalid-characters':
+        entities = json.loads(entities)  # transfer string into a json object
+        json_entities = entities['entities']
+        if json_entities:
+            # 1. get all characters, by storing entities into a dict
+            for entity in json_entities:
+                entity_key = entity['wikipediaId'].replace(' ', '_')
+                # if this is the first time the entity appears
+                if entity_key in characters_dict:
+                    frequency = 0
+                    for m in entity['matches']:
+                        for e in m['entries']:
+                            characters_dict[entity_key]['offsets'].append(e['offset'] + prevOffset)
+                            frequency += 1
+                    characters_dict[entity_key]['frequency'] += frequency
+                else:  # otherwise
+                    entity_value = {}
+                    entity_value['affiliation'] = 'light'
+                    entity_value['name'] = entity['name']
+                    offsets = []
+                    frequency = 0
+                    for m in entity['matches']:
+                        for e in m['entries']:
+                            offsets.append(e['offset'] + prevOffset)
+                            frequency += 1
+                    entity_value['offsets'] = offsets
+                    entity_value['frequency'] = frequency
+                    characters_dict[entity_key] = entity_value
 
 
 def JsonResult(content):
