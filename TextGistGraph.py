@@ -22,7 +22,7 @@ def visualizeSingleDoc():
     timestamp = time.strftime("%Y%m%d_%H%M%S")#get current system time
     dataFile = 'file_'+timestamp + '.json'#use timestamp as data file name
 
-    result = helper.JsonResult( content)#use json to store intermediate data
+    final_result = helper.JsonResult(content)#use json to store intermediate data
     #print(result)
 
     data = {
@@ -609,7 +609,7 @@ def visualizeSingleDoc():
     }
 
     #TODO:0. get system time for json file; 1. identify entities;2. identify comparative sentences; 3. generate json file
-    name = 'data1'
+    name = 'data2'
 
 
     intervals = {#this is the information for each scene
@@ -639,7 +639,7 @@ def visualizeSingleDoc():
         'this is the 2 sentence',
         'this is the 3 sentence'
     ]
-    return render_template('GistGraph.html',name=name, intervals = intervals, data = data)
+    return render_template('GistGraph.html',name=name, intervals = intervals, data = data, final_result = json.dumps(final_result))
 
 @app.route("/SingleDocVisualize/<string:name>")
 def SingleDocVisualize(name):

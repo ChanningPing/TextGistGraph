@@ -129,14 +129,17 @@
              <a id="s1" href="#s1">1ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s2" href="#s2">2ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s3" href="#s3">3ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s4" href="#s4">4sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s5" href="#s5">5ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s6" href="#s6">6ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s7" href="#s7">7ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s8" href="#s8">8ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s9" href="#s9">9ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s10" href="#s10">10ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s11" href="#s11"> 11sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s12" href="#s12"> 12ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s13" href="#s13"> 13ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s14" href="#s14"> 14ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s15" href="#s15"> 15ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s16" href="#s16"> 16ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s17" href="#s17"> 17ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s18" href="#s18"> 18ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s19" href="#s19"> 19ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s20" href="#s20"> 20ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a>
              <script>
                  var intervals = {{ intervals|safe }};
+                 final_result = {{ final_result|safe }};
                  //console.log('text viewer!'+intervals_text.length)
-                var tv = document.getElementById('textViewer');
-                sentences = "";
-                for(var i=0;i<intervals.sentence.length;i++){
-                    console.log('id='+intervals.id[i]+',sentence='+intervals.sentence[i]);
-                    sentences += '<a id="'+intervals.id[i]+'" href="'+ intervals.id[i]+'">'+intervals.sentence[i]+'</a>';
+                 var tv = document.getElementById('textViewer');
+                 paragraph_content = "";
+                 for(var i=0;i<final_result.all_paragraphs.length;i++){
+                    //console.log('id='+intervals.id[i]+',sentence='+intervals.sentence[i]);
+                    paragraph_id = final_result.all_paragraphs[i].paragraph_info.id;
+                    paragraph_text = final_result.all_paragraphs[i].paragraph_info.text;
+                    paragraph_content += '<a id="'+paragraph_id+'" href="'+ paragraph_id+'">'+paragraph_text+'</a>';
                 }
-                tv.innerHTML = sentences;
+                tv.innerHTML = paragraph_content;
                  //below is only for test
                  json_data = {{ data|safe }}
                  for(var i=0;i<json_data.characters.length;i++){
@@ -199,8 +202,8 @@
             // Some defaults
             sceneWidth = 10;
             //width = scenes.length * sceneWidth * 4;
-            width = scenes.length *sceneWidth*10;
-            height = 600;
+            width = scenes.length *sceneWidth*5;
+            height = 1000;
             labelSize = [150,15];
 
             // The container element (this is the HTML fragment);
@@ -232,6 +235,12 @@
             svg.selectAll('text.temp').remove();
             var intervals = {{ intervals|safe }};
             console.log(intervals.start);
+
+            //receive data from python
+            final_result = {{ final_result|safe }};
+            paragraphs = final_result.all_paragraphs;
+            paragraph_scenes_info =  final_result.paragraph_scenes_info;
+            duration = paragraphs.length;
             // Do the layout
             narrative = d3.layout.narrative()
                 .scenes(scenes)
@@ -241,7 +250,7 @@
                 .labelSize([250,15])
                 .scenePadding([5,sceneWidth/2,5,sceneWidth/2])
                 .labelPosition('left')
-                .layout(intervals.start);
+                .layout(paragraph_scenes_info, duration);
 
             // Get the extent so we can re-size the SVG appropriately.
             svg.attr('height', narrative.extent()[1]);
@@ -531,22 +540,101 @@
                 });
 
 
-            //draw chapter lines-way 3
+            //draw the paragraph/sentence ticks  on x-axis
 
-            //get defaults
-            var size = narrative.extent();//width and height of the graph
-            var labelSize = narrative.labelSize();
+            sentences = [{'x':10,'y':250},{'x':22,'y':250},{'x':34,'y':250},{'x':46,'y':250},{'x':58,'y':250},{'x':70,'y':250},{'x':82,'y':250},{'x':94,'y':250},{'x':106,'y':250},{'x':118,'y':250},{'x':130,'y':250},{'x':142,'y':250}];
+            sentences = [
+                {'id':1,'abs_start':1, 'sent_size':36, 'x':10,'y':250,'comparative': 0, 'sentence': 'sentence1'},
+                {'id':2,'abs_start':37, 'sent_size':5, 'x':22,'y':250,'comparative': 0, 'sentence': 'sentence2'},
+                {'id':3,'abs_start':99, 'sent_size':5, 'x':34,'y':250,'comparative': 0, 'sentence': 'sentence3'},
+                {'id':4,'abs_start':130, 'sent_size':5, 'x':46,'y':250,'comparative': 0, 'sentence': 'sentence4'},
+                {'id':5,'abs_start':148, 'sent_size':5, 'x':58,'y':250,'comparative': 1, 'sentence': 'sentence5'},
+                {'id':6,'abs_start':167, 'sent_size':5, 'x':70,'y':250,'comparative': 1, 'sentence': 'sentence6'},
+                {'id':7,'abs_start':192, 'sent_size':5, 'x':82,'y':250,'comparative': 0, 'sentence': 'sentence7'},
+                {'id':8,'abs_start':203, 'sent_size':5, 'x':94,'y':250,'comparative': 1, 'sentence': 'sentence8'},
+                {'id':9,'abs_start':241, 'sent_size':5, 'x':106,'y':250,'comparative': 0, 'sentence': 'sentence9'},
+                {'id':10,'abs_start':276, 'sent_size':5, 'x':118,'y':250,'comparative': 1, 'sentence': 'sentence10'},
+                {'id':11,'abs_start':299, 'sent_size':5, 'x':130,'y':250,'comparative': 1, 'sentence': 'sentence11'},
+                {'id':12,'abs_start':311, 'sent_size':5, 'x':142,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':13,'abs_start':324, 'sent_size':5, 'x':154,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':14,'abs_start':334, 'sent_size':5, 'x':166,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':15,'abs_start':356, 'sent_size':5, 'x':178,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':16,'abs_start':372, 'sent_size':5, 'x':190,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':17,'abs_start':389, 'sent_size':5, 'x':202,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':18,'abs_start':393, 'sent_size':5, 'x':214,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':19,'abs_start':421, 'sent_size':5, 'x':226,'y':250,'comparative': 1, 'sentence': 'sentence'},
+                {'id':20,'abs_start':432, 'sent_size':5, 'x':238,'y':250,'comparative': 1, 'sentence': 'sentence'}
+
+                ];
+
+            //receive data from TestGistGraph.py
+
+            size = narrative.extent();//width and height of the graph
+            labelSize = narrative.labelSize();
+
+
+            scale = (size[0]-labelSize[0])/duration;
+            tick_height = 200
+
+
+            console.log('final duration='+duration);
+            console.log('final scale='+scale);
+
+            //prepare the x of paragraph ticks
+            for(var i=0; i<paragraphs.length;i++){
+                paragraphs[i].paragraph_info.x = scale * paragraphs[i].paragraph_info.rank + labelSize[0];
+                paragraphs[i].paragraph_info.y = tick_height;
+
+            }
+
+            //prepare the tooltip of each scene
+            var paragraph_tip = d3.tip()
+              .attr('class', 'd3-sent-tip')
+              .offset([-1, 0])
+              .html(function(d) {
+                  //return "<strong>Frequency:</strong> <span style='color:red'>" + d.x + "</span>";
+                  return  d.paragraph_info.text ;
+              })
+            paragraph_tip.direction('nw');
+            svg.call(paragraph_tip);
+
+
+            svg.selectAll('.ticks').data(paragraphs).enter()
+                .append('g').attr('class', 'ticks')
+                    .attr('transform', function(d){
+                            var x,y;
+                            x = Math.round(d.paragraph_info.x)+0.5 ;
+                            y = Math.round(d.paragraph_info.y)+0.5;
+
+                            return 'translate('+[x,y]+')';
+                        })
+                    .append('rect')
+                        .attr('width', 10)
+                        .attr('height', 20)
+                        .attr('y', 0)
+                        .attr('x', 0)
+                        .attr('rx', 3)
+                        .attr('ry', 3)
+                        .on('mouseover', paragraph_tip.show)
+                        .on('mouseout', paragraph_tip.hide)
+                    ;
+
+
+
+            //draw chapter
             console.log('in html,size[1]='+size[1]+",labelSize[1]="+labelSize[1]+',size[0]='+size[0]+',labelSize[0]='+labelSize[0]);
 
-            chapterLineHeight = 300;
+            chapterLineHeight = 200;
             //receive from the caller function:
             chapters = [
                 {'x':1, 'label':'chapter1'},
                 {'x':7, 'label':'chapter2'},
                 {'x':16, 'label':'chapter3'},
             ];
+            //chapters = narrative.chapters
             //chapterOffsets = [1, 4, 16];//offsets of the chapter (ith sentence)
-
+            chapters = final_result.chapters
+            /*
             //compute the x-start and scale
             var chapterStarts = [];
             var duration = 0;
@@ -559,13 +647,12 @@
             //duration = intervals.start.reduce(function(a, b) { return a + b; }, 0) + 1;
             //TODO: change the duration to the maximum value of all sentences
             duration = intervals.start[intervals.start.length-1]+1;
-            console.log('final duration='+duration);
-            scale = (size[0]-labelSize[0])/duration;
-            console.log('final scale='+scale);
+            */
+
             for(var i=0;i<chapters.length;i++){
                 //console.log('inital final x='+chapters[i].x);
                 //console.log('final start='+chapterStarts[i]);
-                chapters[i].x = scale * chapterStarts[i] + labelSize[0];
+                chapters[i].x = scale * chapters[i].paragraph_rank + labelSize[0];
                 console.log('final x='+chapters[i].x);
             }
             //draw lines based on re-calculated x of chapter lines
@@ -575,7 +662,7 @@
                 'y1':(function(d) { return 0; }),
                 'x2':(function(d) { return d.x; }),
                 'y2':(function(d) { return chapterLineHeight-10; }),
-                'label':(function(d) { return d.label; })
+                'label':(function(d) { return d.text; })
                 }
 
 
@@ -601,70 +688,7 @@
                  .text(line.label);
 
 
-            //draw the sentences x-axis
-            //TODO: has to change the x based on absolute #, calculate the x based on the absolute # and scale.
-            //TODO: also has to change the x of the scenes
-             var x_indent = narrative.introductions()? narrative.introductions()[0].x:0;
-              sentences = [{'x':10,'y':250},{'x':22,'y':250},{'x':34,'y':250},{'x':46,'y':250},{'x':58,'y':250},{'x':70,'y':250},{'x':82,'y':250},{'x':94,'y':250},{'x':106,'y':250},{'x':118,'y':250},{'x':130,'y':250},{'x':142,'y':250}];
-              sentences = [
-                {'id':1,'abs_start':1, 'sent_size':36, 'x':10,'y':250,'comparative': 0, 'sentence': 'sentence1'},
-                {'id':2,'abs_start':37, 'sent_size':5, 'x':22,'y':250,'comparative': 0, 'sentence': 'sentence2'},
-                {'id':3,'abs_start':99, 'sent_size':5, 'x':34,'y':250,'comparative': 0, 'sentence': 'sentence3'},
-                {'id':4,'abs_start':130, 'sent_size':5, 'x':46,'y':250,'comparative': 0, 'sentence': 'sentence4'},
-                {'id':5,'abs_start':148, 'sent_size':5, 'x':58,'y':250,'comparative': 1, 'sentence': 'sentence5'},
-                {'id':6,'abs_start':167, 'sent_size':5, 'x':70,'y':250,'comparative': 1, 'sentence': 'sentence6'},
-                {'id':7,'abs_start':192, 'sent_size':5, 'x':82,'y':250,'comparative': 0, 'sentence': 'sentence7'},
-                {'id':8,'abs_start':203, 'sent_size':5, 'x':94,'y':250,'comparative': 1, 'sentence': 'sentence8'},
-                {'id':9,'abs_start':241, 'sent_size':5, 'x':106,'y':250,'comparative': 0, 'sentence': 'sentence9'},
-                {'id':10,'abs_start':276, 'sent_size':5, 'x':118,'y':250,'comparative': 1, 'sentence': 'sentence10'},
-                {'id':11,'abs_start':299, 'sent_size':5, 'x':130,'y':250,'comparative': 1, 'sentence': 'sentence11'},
-                {'id':12,'abs_start':311, 'sent_size':5, 'x':142,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':13,'abs_start':324, 'sent_size':5, 'x':154,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':14,'abs_start':334, 'sent_size':5, 'x':166,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':15,'abs_start':356, 'sent_size':5, 'x':178,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':16,'abs_start':372, 'sent_size':5, 'x':190,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':17,'abs_start':389, 'sent_size':5, 'x':202,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':18,'abs_start':393, 'sent_size':5, 'x':214,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':19,'abs_start':421, 'sent_size':5, 'x':226,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':20,'abs_start':432, 'sent_size':5, 'x':238,'y':250,'comparative': 1, 'sentence': 'sentence'}
 
-                ];
-            //prepare the tooltip of each scene
-            var sent_tip = d3.tip()
-              .attr('class', 'd3-sent-tip')
-              .offset([-1, 0])
-              .html(function(d) {
-                //return "<strong>Frequency:</strong> <span style='color:red'>" + d.x + "</span>";
-                  //TODO: load sentence data here, rewrite the scene data to include sentences
-                  return  d.sentence ;
-              })
-            sent_tip.direction('nw');
-            svg.call(sent_tip);
-
-            //prepare the x, y of sentences
-            for(var i=0; i<sentences.length;i++){
-                sentences[i].x = scale * sentences[i].id + labelSize[0];
-            }
-
-            svg.selectAll('.sents').data(sentences).enter()
-                .append('g').attr('class', 'sents')
-                    .attr('transform', function(d){
-                            var x,y;
-                            x = Math.round(d.x)+0.5 ;
-                            y = Math.round(d.y)+0.5;
-
-                            return 'translate('+[x,y]+')';
-                        })
-                    .append('rect')
-                        .attr('width', 10)
-                        .attr('height', 20)
-                        .attr('y', 0)
-                        .attr('x', 0)
-                        .attr('rx', 3)
-                        .attr('ry', 3)
-                        .on('mouseover', sent_tip.show)
-                        .on('mouseout', sent_tip.hide)
-                    ;
 
         });
 

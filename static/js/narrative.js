@@ -696,7 +696,7 @@ narrative.introductions = function() {
 // Compute the narrative layout. This should be called after all options and
 // data have been set and before attempting to use the layout's output for
 // display purposes.
-narrative.layout = function(starts) {
+narrative.layout = function(paragraph_scenes_info, duration) {
 	computeSceneCharacters();
 	computeCharacterGroups();
 	setSceneGroups();
@@ -705,7 +705,7 @@ narrative.layout = function(starts) {
 	computeGroupPositions();
 	computeCharacterGroupPositions();
 	sortGroupAppearances();
-	computeSceneTiming(starts);
+	computeSceneTiming(paragraph_scenes_info, duration);
 	computeAppearancePositions();
 	computeScenePositions();
 	createIntroductionNodes();
@@ -1053,7 +1053,7 @@ function sortGroupAppearances() {
 // Compute the scene timing.
 //
 // TODO: support dates
-function computeSceneTiming(starts) {
+function computeSceneTiming(paragraph_scenes_info, duration) {
 	/*
     console.log('timing');
 	var duration = 1;
@@ -1075,15 +1075,15 @@ function computeSceneTiming(starts) {
     //return duration;
     */
 	//re-write the function based on absolute rank of the scene, e.g. sentence#1, sentence#4,sentence#7...
-	var duration = 1;
+
 	var pointer = 0;
 	scenes.forEach(function(scene){
-		scene.start = scene.start || starts[pointer];
+		scene.start = scene.start || paragraph_scenes_info[pointer].x;
 		pointer ++;
 		//scene.duration = scene.duration || 1;
 		//duration += scene.duration;
 	});
-	duration = starts[starts.length-1]+1;
+	//duration = starts[starts.length-1]+1;
 	scale = ((orientation === 'vertical') ? size[1]-labelSize[1] : size[0]-labelSize[0])/duration;
 }
 

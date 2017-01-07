@@ -49,18 +49,20 @@ def get_structured_content (content, c):
             if s[0:1] == c and len(s) < max_heading_length:
                 ss[j] = s[1:]
                 chapter = {}
-                chapter['sentence_rank'] = sentence_count
-                chapter['sentence_id'] = 's_' + str(sentence_count)
-                chapter['paragraph_rank'] = paragraph_count
-                chapter['paragraph_id'] = 'p_' + str(paragraph_count)
+                chapter['sentence_rank'] = j
+                chapter['sentence_id'] = 's_' + str(j)
+                chapter['paragraph_rank'] = i
+                chapter['paragraph_id'] = 'p_' + str(i)
                 chapter['text'] = ss[j]
                 chapters.append(chapter)
 
-            sentence['rank'] = sentence_count
-            sentence['id'] = 'st_' + str(sentence_count)
+            sentence['rank'] = j
+            sentence['id'] = 'st_' + str(j)
             sentence['text'] = ss[j]
             sentence['IsComparative'] = 0 #TODO: call function to test if ss[j] is comparative or not
             sentences.append(sentence)
+        paragraph_info['rank'] = i
+        paragraph_info['id'] = 'p_' + str(i)
         paragraph_info['entities'] = []
         paragraph_info['text'] = ('').join([s['text'] for s in sentences])
         structured_paragraph['paragraph_info'] = paragraph_info
@@ -76,17 +78,33 @@ def get_entity_cooccurrence_in_paragraph(structured_content):
 
     block = ''
     prevOffset = 0
-
+    paragraph_start = 0
+    sentence_start = 0
     for p in paragraphs:  # for each paragraph
+        #calculate the ranges of each paragraph and sentence
+        p['paragraph_info']['start'] = paragraph_start
+        p['paragraph_info']['end'] = paragraph_start + len(p['paragraph_info']['text'])
+        paragraph_start = p['paragraph_info']['end']
+        sentences = p['sentences']
+        #print('[p_start]=' + str(p['paragraph_info']['start']) + '[p_end]=' + str(p['paragraph_info']['end']) + '[paragraph]=' + p['paragraph_info']['text'])
+        for s in sentences:
+            s['start'] = sentence_start
+            s['end'] = sentence_start + len(s['text'])
+            sentence_start = s['end']
+            #print('[s_start]=' + str(s['start']) + '[s_end]=' + str(s['end']) + '[sentence]=' + s['text'])
+
+        #merge paragraphs into blocks for saving MS entity linking service limits
         if len(block + p['paragraph_info']['text']) <= daily_limit:
             block += p['paragraph_info']['text']
-            print('block='+block)
+
             continue
         else:
+            #print('block=' + block)
             getEntityDictionary(block, prevOffset)
-            prevOffset = len(block)
+            prevOffset = prevOffset + len(block)
             block = p['paragraph_info']['text']
     getEntityDictionary(block, prevOffset)
+    #print('block=' + block)
     characters = []
     for key, value in characters_dict.iteritems():
         character = {}
@@ -98,10 +116,68 @@ def get_entity_cooccurrence_in_paragraph(structured_content):
         characters.append(character)
     print('characters=')
     print(characters)
-        # 2. put characters co-occurring in a paragraph into a scene
-        # 3. get all data needed
+    # 1. get the paragraph_rank and sentence_rank of each entity
+    curr_Paragraph_rank = 0 #use the pointer as the start of finding the correct range, so that we don't have to start from begining every time. linear time complexity.
+    for c in characters:
+        paragraph_occurrences = []
+        sentence_occurrences = []
+        for offset in c['offsets']:
+            for p in paragraphs:
+                if p['paragraph_info']['start'] <= offset <= p['paragraph_info']['end']:
+                    paragraph_occurrences.append(p['paragraph_info']['rank'])
+                    for s in p['sentences']:
+                        if s['start'] <= offset <= s['end']:
+                            sentence_occurrences.append(s['rank'])
+                            break
+                    curr_Paragraph_rank = p['paragraph_info']['rank']
+                    break
+        c['paragraph_occurrences'] = paragraph_occurrences
+        print('paragraph occurrences=')
+        print(paragraph_occurrences)
+        c['sentence_occurrences'] = sentence_occurrences
 
-        # print(entities)
+    # 2. put characters co-occurring in a paragraph into a scene
+    paragraph_scenes_dict = {} #key:paragraph_rank; value: entity_id
+    sentence_scenes_dict = {}
+    for c in characters:
+        for p_o in c['paragraph_occurrences']:
+            if p_o in paragraph_scenes_dict:
+                paragraph_scenes_dict[p_o].append(c['id'])
+            else:
+                entity_ids = []
+                entity_ids.append(c['id'])
+                paragraph_scenes_dict[p_o] = entity_ids
+
+    paragraph_scenes = []
+    paragraph_scenes_info = []
+    #prepare a paragraph dictionary, for looking up text based on rank
+    paragraph_id_text_dict = {}
+    for p in paragraphs:
+        paragraph_id_text_dict[p['paragraph_info']['rank']] = p['paragraph_info']['text']
+
+
+
+    for key, value in paragraph_scenes_dict.iteritems():
+        print(key)
+        print(value)
+        paragraph_scenes.append(list(set(value)))
+        scene_info = {}
+        scene_info['x'] = key #paragraph rank
+        scene_info['text'] = paragraph_id_text_dict[key]
+        paragraph_scenes_info.append(scene_info)
+
+    # 3. get all data needed
+    final_result ={}
+    final_result['characters'] = characters
+    final_result['scenes'] = paragraph_scenes
+    final_result['paragraph_scenes_info'] = paragraph_scenes_info
+    final_result['chapters'] = structured_content['chapters']
+    final_result['all_paragraphs'] = paragraphs
+
+
+    with open(APP_STATIC + '/data/data2.json', 'w') as fp:
+        json.dump(final_result, fp)
+    return final_result
 
 def getEntityDictionary(block, prevOffset):
     '''
@@ -109,10 +185,10 @@ def getEntityDictionary(block, prevOffset):
     :param currOffset: the current length of the last block
     :return: modify the dict
     '''
-    print('execute block!' + block +', with offset='+str(prevOffset))
+    #print('[execute block!]=' + block +'  [offset]='+str(prevOffset))
     entities = MSEntityLinking.entityOffsets(block)  # get all its entities
-    print('entities')
-    print(entities)
+    #print('entities')
+    #print(entities)
     if entities != 'error-001:invalid-characters':
         entities = json.loads(entities)  # transfer string into a json object
         json_entities = entities['entities']
@@ -151,7 +227,7 @@ def JsonResult(content):
 
     structured_content = get_structured_content (content, '#')
     print('succeed to get structured content...')
-    get_entity_cooccurrence_in_paragraph(structured_content)
+    final_result = get_entity_cooccurrence_in_paragraph(structured_content)
     print('succeed to get entity offsets on paragraph level...')
 
-    return structured_content
+    return final_result
