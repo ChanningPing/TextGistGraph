@@ -428,6 +428,13 @@ orientation = 'horizontal';
 // The narrative object which is returned and exposes the public API.
 narrative = {};
 
+narrative.scale = function(_) {
+	if (!arguments.length) {
+		return scale;
+	}
+	scenes = _;
+	return narrative;
+};
 // Scenes
 // ------
 //
@@ -1075,7 +1082,7 @@ function computeSceneTiming(paragraph_scenes_info, duration) {
     //return duration;
     */
 	//re-write the function based on absolute rank of the scene, e.g. sentence#1, sentence#4,sentence#7...
-
+	//size = narrative.extent();
 	var pointer = 0;
 	scenes.forEach(function(scene){
 		scene.start = scene.start || paragraph_scenes_info[pointer].x;
@@ -1084,7 +1091,12 @@ function computeSceneTiming(paragraph_scenes_info, duration) {
 		//duration += scene.duration;
 	});
 	//duration = starts[starts.length-1]+1;
+
 	scale = ((orientation === 'vertical') ? size[1]-labelSize[1] : size[0]-labelSize[0])/duration;
+	console.log('in narrative.js, the duration='+duration);
+    console.log('size[1]='+size[1]+",labelSize[1]="+labelSize[1]+',size[0]='+size[0]+',labelSize[0]='+labelSize[0]);
+    console.log('in narrative.js, the scale just calculated='+scale);
+
 }
 
 // Character positions

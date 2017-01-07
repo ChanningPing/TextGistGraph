@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
-
 	text {
 		font-family: "ProximaNova",Helvetica,Arial,sans-serif;
 		font-size: 12px;
@@ -12,13 +11,11 @@
         font-weight: bold;
         color: red;
 	}
-
 	rect {
 		fill: none;
 		stroke: #000;
         pointer-events: all;
 	}
-
     rect:hover {
       fill: orangered ;
     }
@@ -106,8 +103,9 @@
         display: inline;
     }
     a:focus {
-        box-shadow: 0 0 0 2px #f90; /* or whatever colour you'd prefer */
-        background-color: yellow;
+        text-decoration: none;
+        box-shadow: 0 0 0 2px #ffccdd; /* or whatever colour you'd prefer */
+        background-color: #ffccdd;
     }
     div.blah {
         position:fixed;
@@ -115,7 +113,11 @@
         left:0; /*[wherever you want it]*/
 }
     div.scroll {
-        background-color: #f9f6e0;
+        padding-top: 2%;
+        padding-bottom: 2%;
+        padding-left: 20%;
+        margin-bottom: 2%;
+        background-color: #cceeff;
         height: 300px;
         width: 100%;
         overflow-y: scroll;
@@ -124,11 +126,10 @@
 </style>
 
 <body>
-    <div rows="4" cols="100" class = 'scroll'>
+    <div id='textView_div' rows="4" cols="100" class = 'scroll'>
         <pre id="textViewer" >
-             <a id="s1" href="#s1">1ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s2" href="#s2">2ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s3" href="#s3">3ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s4" href="#s4">4sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s5" href="#s5">5ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s6" href="#s6">6ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s7" href="#s7">7ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s8" href="#s8">8ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s9" href="#s9">9ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s10" href="#s10">10ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s11" href="#s11"> 11sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s12" href="#s12"> 12ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s13" href="#s13"> 13ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s14" href="#s14"> 14ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s15" href="#s15"> 15ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s16" href="#s16"> 16ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s17" href="#s17"> 17ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s18" href="#s18"> 18ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s19" href="#s19"> 19ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a><a id="s20" href="#s20"> 20ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</a>
              <script>
-                 var intervals = {{ intervals|safe }};
+                 //var intervals = {{ intervals|safe }};
                  final_result = {{ final_result|safe }};
                  //console.log('text viewer!'+intervals_text.length)
                  var tv = document.getElementById('textViewer');
@@ -137,62 +138,23 @@
                     //console.log('id='+intervals.id[i]+',sentence='+intervals.sentence[i]);
                     paragraph_id = final_result.all_paragraphs[i].paragraph_info.id;
                     paragraph_text = final_result.all_paragraphs[i].paragraph_info.text;
-                    paragraph_content += '<a id="'+paragraph_id+'" href="'+ paragraph_id+'">'+paragraph_text+'</a>';
+                    paragraph_content += '<p><a id="'+paragraph_id+'" href="'+ paragraph_id+'">'+paragraph_text+'</a></p>';
                 }
                 tv.innerHTML = paragraph_content;
-                 //below is only for test
-                 json_data = {{ data|safe }}
-                 for(var i=0;i<json_data.characters.length;i++){
-                     console.log("character id="+json_data.characters[i].id);
-                 }
-
-
              </script>
-
         </pre>
-
     </div>
 
-    <input type="button" onclick="myFunction()" value="Get focus on 1">
-    <script>
-    function myFunction() {
-             //setTimeout(function() {window.scrollTo(0, top);},1)
-            document.getElementById("s1").focus();
-            document.querySelector('#s1').scrollIntoView({
-                behavior: 'smooth'
-            });
 
-
-    }
-    </script>
-
-    <input type="button" onclick="myFunction3()" value="Get focus on 492">
-    <script>
-    function myFunction3() {
-        //var top = document.getElementById('s10').offsetTop; //Getting Y of target element
-        console.log('top='+top);
-        //setTimeout(function() {window.scrollTo(0, top);},1)
-        //document.getElementById("#s10").focus();
-        //window.scrollBy(0,top,'smooth');
-        document.getElementById("s492").focus();
-        document.querySelector('#s492').scrollIntoView({
-            behavior: 'smooth'
-        });
-        //document.getElementById ("#s10").scrollIntoView (true);
-    }
-    </script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-shim.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.0/es6-shim.js"></script>
+	<script src="static/js/es5-shim.js"></script>
+	<script src="static/js/es6-shim.js"></script>
     <script src="static/js/d3.min.js"></script>
     <script src="static/js/d3.tip.js"></script>
-
 	<script src="static/js/narrative.js"></script>
 
 	<script>
         console.log('{{ name }}');
         var fileName='static/data/'+ '{{ name }}' +'.json';
-        //console.log({{ intervals|safe }});
-
         d3.json(fileName, function(err, response){
             var svg, scenes, charactersMap, width, height, sceneWidth;
 
@@ -202,8 +164,8 @@
             // Some defaults
             sceneWidth = 10;
             //width = scenes.length * sceneWidth * 4;
-            width = scenes.length *sceneWidth*5;
-            height = 1000;
+            width = scenes.length *sceneWidth*3;
+            height = 1400;
             labelSize = [150,15];
 
             // The container element (this is the HTML fragment);
@@ -234,7 +196,7 @@
             // Remove all the temporary labels.
             svg.selectAll('text.temp').remove();
             var intervals = {{ intervals|safe }};
-            console.log(intervals.start);
+            //console.log(intervals.start);
 
             //receive data from python
             final_result = {{ final_result|safe }};
@@ -253,16 +215,26 @@
                 .layout(paragraph_scenes_info, duration);
 
             // Get the extent so we can re-size the SVG appropriately.
-            svg.attr('height', narrative.extent()[1]);
+            svg.attr('height', narrative.extent()[1]+200);
+
+            //prepare to add the all_paragraphs info into the narrative.scenes
+            scenes = narrative.scenes();
+            for(var i=0;i<scenes.length;i++){
+                scenes[i].text = paragraph_scenes_info[i].text;
+                scenes[i].id = "p_"+paragraph_scenes_info[i].x;
+                //console.log('paragraph_info text=' + scenes[i].text );
+                //console.log(scenes[i]);
+            }
 
             //prepare the tooltip of each scene
             var tip = d3.tip()
               .attr('class', 'd3-tip')
               .offset([-10, 0])
-              .html(function() {
+              .html(function(d) {
                 //return "<strong>Frequency:</strong> <span style='color:red'>" + d.x + "</span>";
                   //TODO: load sentence data here, rewrite the scene data to include sentences
-                  return "<tspan>" + "The Poisson distribution can also be used for the number of events in other specified intervals such as distance, area or volume.For instance, an individual keeping track of the amount of mail they receive each day may notice that they receive an average number of 4 letters per day." + "</tspan>";
+                  console.log('object gets here:' + d);
+                  return "<tspan>" + d.text + "</tspan>";
               })
             tip.direction('sw');
             svg.call(tip);
@@ -284,7 +256,7 @@
                         var y_map={};//id map of the characters in this scene
                         for(var i=0;i<d.appearances.length;i++){
                                 y_map[d.appearances[i].character.id]=d.appearances[i].y;
-                                console.log('the character id ='+d.characters[i].id+", the y-axis="+d.appearances[i].y);
+                                //console.log('the character id ='+d.characters[i].id+", the y-axis="+d.appearances[i].y);
                         }
 
                         //DONE: copy the path coordinates to a global dataset, which is modifiable.
@@ -370,7 +342,7 @@
 
 
             // Draw the scenes
-            svg.selectAll('.scene').data(narrative.scenes()).enter()
+            svg.selectAll('.scene').data(scenes).enter()
                 .append('g').attr('class', 'scene')
                     .call(drag)
                     .attr('transform', function(d){
@@ -389,7 +361,7 @@
                          })
                     .on('mouseover', function(d){
                              // append the y line
-                             tip.show();
+                             tip.show(d);
                              var indent_x = narrative.introductions()? narrative.introductions()[0].x:0;
                              d3.select(this)
                                 .append("line")
@@ -429,6 +401,13 @@
                                              return 0.2;
                                          }
                                      })
+                            document.getElementById(d.id).focus();
+                            //document.querySelector('#'+d.id).scrollIntoView({
+                                //behavior: 'smooth'
+                            //});
+
+                            document.querySelector('#'+d.id).scrollIntoView(true);
+                            document.getElementById("textView_div").scrollTop -= 40;
                             d3.event.stopPropagation();
                         })
                     .append('rect')
@@ -541,44 +520,21 @@
 
 
             //draw the paragraph/sentence ticks  on x-axis
-
-            sentences = [{'x':10,'y':250},{'x':22,'y':250},{'x':34,'y':250},{'x':46,'y':250},{'x':58,'y':250},{'x':70,'y':250},{'x':82,'y':250},{'x':94,'y':250},{'x':106,'y':250},{'x':118,'y':250},{'x':130,'y':250},{'x':142,'y':250}];
-            sentences = [
-                {'id':1,'abs_start':1, 'sent_size':36, 'x':10,'y':250,'comparative': 0, 'sentence': 'sentence1'},
-                {'id':2,'abs_start':37, 'sent_size':5, 'x':22,'y':250,'comparative': 0, 'sentence': 'sentence2'},
-                {'id':3,'abs_start':99, 'sent_size':5, 'x':34,'y':250,'comparative': 0, 'sentence': 'sentence3'},
-                {'id':4,'abs_start':130, 'sent_size':5, 'x':46,'y':250,'comparative': 0, 'sentence': 'sentence4'},
-                {'id':5,'abs_start':148, 'sent_size':5, 'x':58,'y':250,'comparative': 1, 'sentence': 'sentence5'},
-                {'id':6,'abs_start':167, 'sent_size':5, 'x':70,'y':250,'comparative': 1, 'sentence': 'sentence6'},
-                {'id':7,'abs_start':192, 'sent_size':5, 'x':82,'y':250,'comparative': 0, 'sentence': 'sentence7'},
-                {'id':8,'abs_start':203, 'sent_size':5, 'x':94,'y':250,'comparative': 1, 'sentence': 'sentence8'},
-                {'id':9,'abs_start':241, 'sent_size':5, 'x':106,'y':250,'comparative': 0, 'sentence': 'sentence9'},
-                {'id':10,'abs_start':276, 'sent_size':5, 'x':118,'y':250,'comparative': 1, 'sentence': 'sentence10'},
-                {'id':11,'abs_start':299, 'sent_size':5, 'x':130,'y':250,'comparative': 1, 'sentence': 'sentence11'},
-                {'id':12,'abs_start':311, 'sent_size':5, 'x':142,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':13,'abs_start':324, 'sent_size':5, 'x':154,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':14,'abs_start':334, 'sent_size':5, 'x':166,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':15,'abs_start':356, 'sent_size':5, 'x':178,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':16,'abs_start':372, 'sent_size':5, 'x':190,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':17,'abs_start':389, 'sent_size':5, 'x':202,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':18,'abs_start':393, 'sent_size':5, 'x':214,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':19,'abs_start':421, 'sent_size':5, 'x':226,'y':250,'comparative': 1, 'sentence': 'sentence'},
-                {'id':20,'abs_start':432, 'sent_size':5, 'x':238,'y':250,'comparative': 1, 'sentence': 'sentence'}
-
-                ];
-
             //receive data from TestGistGraph.py
 
             size = narrative.extent();//width and height of the graph
             labelSize = narrative.labelSize();
 
 
-            scale = (size[0]-labelSize[0])/duration;
-            tick_height = 200
+            //scale = (size[0]-labelSize[0])/duration;
+            scale = narrative.scale();
+            tick_height = 280;
 
 
-            console.log('final duration='+duration);
-            console.log('final scale='+scale);
+            console.log('in html, the duration='+duration);
+            console.log('in html, the scale='+scale);
+            console.log('in html, the size[1]='+size[1]+",labelSize[1]="+labelSize[1]+',size[0]='+size[0]+',labelSize[0]='+labelSize[0]);
+
 
             //prepare the x of paragraph ticks
             for(var i=0; i<paragraphs.length;i++){
@@ -617,6 +573,14 @@
                         .attr('ry', 3)
                         .on('mouseover', paragraph_tip.show)
                         .on('mouseout', paragraph_tip.hide)
+                        .on('click', function(d){
+                            document.getElementById(d.paragraph_info.id).focus();
+                           // document.querySelector('#'+d.paragraph_info.id).scrollIntoView({
+                                //behavior: 'smooth'
+                            //});
+                            document.querySelector('#'+d.paragraph_info.id).scrollIntoView(true);
+                            document.getElementById("textView_div").scrollTop -= 40;
+                        })
                     ;
 
 
@@ -624,30 +588,14 @@
             //draw chapter
             console.log('in html,size[1]='+size[1]+",labelSize[1]="+labelSize[1]+',size[0]='+size[0]+',labelSize[0]='+labelSize[0]);
 
-            chapterLineHeight = 200;
-            //receive from the caller function:
-            chapters = [
-                {'x':1, 'label':'chapter1'},
-                {'x':7, 'label':'chapter2'},
-                {'x':16, 'label':'chapter3'},
-            ];
-            //chapters = narrative.chapters
-            //chapterOffsets = [1, 4, 16];//offsets of the chapter (ith sentence)
-            chapters = final_result.chapters
-            /*
-            //compute the x-start and scale
-            var chapterStarts = [];
-            var duration = 0;
-            for(var i=0;i<chapters.length;i++){
-                //duration += chapters[i].x;
-                chapterStarts.push(chapters[i].x);
-                //console.log('chapter offset='+chapters[i].x+',start='+chapterStarts[i]);
-            }
+            chapterLineHeight = 320;
+            console.log('the height of the svg =' + height+', and actual height='+narrative.extent()[1]+200);
+            console.log('chapter height='+chapterLineHeight);
+            console.log('tick height='+tick_height);
 
-            //duration = intervals.start.reduce(function(a, b) { return a + b; }, 0) + 1;
-            //TODO: change the duration to the maximum value of all sentences
-            duration = intervals.start[intervals.start.length-1]+1;
-            */
+
+            chapters = final_result.chapters
+
 
             for(var i=0;i<chapters.length;i++){
                 //console.log('inital final x='+chapters[i].x);
@@ -657,13 +605,7 @@
             }
             //draw lines based on re-calculated x of chapter lines
 
-            var line = {
-                'x1':(function(d) { return d.x; }),
-                'y1':(function(d) { return 0; }),
-                'x2':(function(d) { return d.x; }),
-                'y2':(function(d) { return chapterLineHeight-10; }),
-                'label':(function(d) { return d.text; })
-                }
+
 
 
             var label = svg.selectAll(".labels")
@@ -671,21 +613,30 @@
                   .enter();
 
                 label.append("svg:line")
-                        .attr("x1", line.x1)
-                        .attr("y1", line.y1)
-                        .attr("x2", line.x2)
-                        .attr("y2", line.y2)
+                        .attr("x1", function(d){ return d.x;})
+                        .attr("y1", 0)
+                        .attr("x2", function(d){ return d.x;})
+                        .attr("y2", chapterLineHeight)
                     .style("stroke-width", 0.5)
                     .style("stroke", "grey")
                     .style("fill", "none");
+
                 label.append("text")
-                 .attr("x", line.x2)
-                 .attr("y", line.y2)
+                 //.attr("x", function(d){ return d.x;})
+                 //.attr("y", chapterLineHeight)
+                 .style("fill", "grey")
                  //.attr("dy", ".35em")
                  //.attr("transform", "rotate(315)")
-                 .style("text-anchor", "middle")
-                 .style("fill", "grey")
-                 .text(line.label);
+                 //.attr("dy", ".35em")           // set offset y position
+                 .attr("text-anchor", "end") // set anchor y justification
+                 .attr("transform", function(d){
+                     return "translate(" + d.x + "," + chapterLineHeight+") rotate(-30)";
+                     //return "translate(20,0) rotate(-45)";
+                 })
+                 //.attr("transform", "rotate(5)")
+
+
+                 .text(function(d){return d.text;});
 
 
 
