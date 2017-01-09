@@ -7,6 +7,7 @@ import csv
 import json
 import nltk
 import pickle
+from string import maketrans
 from collections import defaultdict
 from nltk.stem.snowball import SnowballStemmer
 from sklearn.naive_bayes import MultinomialNB
@@ -66,7 +67,10 @@ def sentence_to_sequences(sentence, label, window_size):
     '''
 
     # 1. remove punctuations
-    sentence = sentence.translate(None, string.punctuation)
+    print(sentence)
+    replace_punctuation = string.maketrans(string.punctuation, ' ' * len(string.punctuation))
+    sentence = str(sentence)
+    sentence = sentence.translate(replace_punctuation)
     # 2. POS tag the sentence
     tagged_tuples = nltk.pos_tag(nltk.word_tokenize(sentence.lower()))
     # 3. define the sequence object
@@ -372,18 +376,27 @@ def read_rule_dict(file_name):
 
     return read_rule_dictionary
 
-def predict_comparative(sentence, classfier_file_name, rule_dict_file_name):
+def predict_initiation(classfier_file_name, rule_dict_file_name):
+    # 1. read the rule dict
+    read_rule_dictionary = read_rule_dict(rule_dict_file_name)
+
+    # 2. read the classifier
+    loaded_Bayes_classifier = read_classifier(classfier_file_name)
+    predict_initiation_tools = {}
+    predict_initiation_tools['dict'] = read_rule_dictionary
+    predict_initiation_tools['classifier'] = loaded_Bayes_classifier
+    return predict_initiation_tools
+
+
+
+def predict_comparative(sentence,read_rule_dictionary, loaded_Bayes_classifier ):
     '''
     :param sentence:
     :param classfier_file_name:
     :param rule_dict_file_name:
     :return:
     '''
-    # 1. read the rule dict
-    read_rule_dictionary = read_rule_dict(rule_dict_file_name)
 
-    # 2. read the classifier
-    loaded_Bayes_classifier = read_classifier(classfier_file_name)
 
     # 3. generate the sequence
     sequences = sentence_to_sequences(sentence, 0, window_size)
@@ -393,21 +406,23 @@ def predict_comparative(sentence, classfier_file_name, rule_dict_file_name):
     sentence_object['label'] = 0
     sentence_object['sequences'] = sequences
     sentence_object['sentence'] = sentence
-    print('sentence object=')
-    print(sentence_object)
+    #print('sentence object=')
+    #print(sentence_object)
     features = get_features(sentence_object,read_rule_dictionary)
-    print('in predict, length of the features'+str(len(features)))
+    ##print('in predict, length of the features'+str(len(features)))
 
     # 5. predict
     print('[sentence]='+sentence)
-    print('[dict]=')
-    print(read_rule_dictionary)
-    print('sequences')
-    print(sequences)
-    print('features')
-    print(features)
+    #print('[dict]=')
+    #print(read_rule_dictionary)
+    #print('sequences')
+    #print(sequences)
+    #print('features')
+    #print(features)
     print('after reload the classifier, the predicted result=')
-    print(loaded_Bayes_classifier.predict(features))
+    class_result = loaded_Bayes_classifier.predict(features)
+    print(class_result)
+    return class_result
 
 
 
@@ -425,7 +440,7 @@ def main():
 
 
 
-    predict_comparative(sentence, classifier_file_name, rule_dict_file_name)
+    #predict_comparative(sentence, classifier_file_name, rule_dict_file_name)
 
 
 

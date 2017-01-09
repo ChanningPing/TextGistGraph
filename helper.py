@@ -5,6 +5,7 @@ import pickle
 import os
 import string
 import MSEntityLinking
+import ComparativeSentenceClassification
 from settings import APP_STATIC
 
 daily_limit = 10000
@@ -19,6 +20,15 @@ def get_structured_content (content, c):
     (1) chapters: a list of chapters, each chapter has (1) rank; (2) id; (3) heading
     (2) all_paragraphs: a list of paragraphs, each paragraph is a list of sentences, each sentence has (1) rank; (2) id; (3) text; (4) IsComparative
     '''
+    #prepare for the dict  and classifier used in comparative sentence
+    classfier_file_name = APP_STATIC + '/nlp/CSR/classifier.sav'
+    rule_dict_file_name = APP_STATIC + '/nlp/CSR/CSR_rules.csv'
+    predict_tools = ComparativeSentenceClassification.predict_initiation(classfier_file_name, rule_dict_file_name)
+    print(predict_tools['dict'])
+    print(predict_tools['classifier'])
+
+
+
 
     printable = set(string.printable)
     content =  filter(lambda x: x in printable, content)
@@ -60,6 +70,7 @@ def get_structured_content (content, c):
             sentence['id'] = 'st_' + str(j)
             sentence['text'] = ss[j]
             sentence['IsComparative'] = 0 #TODO: call function to test if ss[j] is comparative or not
+            sentence['IsComparative'] = ComparativeSentenceClassification.predict_comparative(ss[j] , predict_tools['dict'],predict_tools['classifier'])
             sentences.append(sentence)
         paragraph_info['rank'] = i
         paragraph_info['id'] = 'p_' + str(i)
@@ -68,8 +79,16 @@ def get_structured_content (content, c):
         structured_paragraph['paragraph_info'] = paragraph_info
         structured_paragraph['sentences'] = sentences
         all_paragraphs.append(structured_paragraph)
+
     structured_content['chapters'] = chapters
     structured_content['all_paragraphs'] = all_paragraphs
+
+    #write structured_content
+    file_name = APP_STATIC + '/nlp/CSR/structured_content.csv'
+    file = open(file_name, 'w')
+    file.write(structured_content)
+
+
     return structured_content
 
 def get_entity_cooccurrence_in_paragraph(structured_content):
