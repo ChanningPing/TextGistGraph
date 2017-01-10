@@ -126,16 +126,17 @@
 </style>
 
 <body>
+    <h1>{{ title }}</h1>
     <div id='textView_div' rows="4" cols="100" class = 'scroll'>
         <pre id="textViewer" >
              <script>
-                 //var intervals = {{ intervals|safe }};
+
                  final_result = {{ final_result|safe }};
-                 //console.log('text viewer!'+intervals_text.length)
+
                  var tv = document.getElementById('textViewer');
                  paragraph_content = "";
                  for(var i=0;i<final_result.all_paragraphs.length;i++){
-                    //console.log('id='+intervals.id[i]+',sentence='+intervals.sentence[i]);
+
                     paragraph_id = final_result.all_paragraphs[i].paragraph_info.id;
                     paragraph_text = final_result.all_paragraphs[i].paragraph_info.text;
                     paragraph_content += '<p><a id="'+paragraph_id+'" href="'+ paragraph_id+'">'+paragraph_text+'</a></p>';
@@ -151,6 +152,7 @@
     <script src="static/js/d3.min.js"></script>
     <script src="static/js/d3.tip.js"></script>
 	<script src="static/js/narrative.js"></script>
+
 
 	<script>
         console.log('{{ name }}');
@@ -195,8 +197,7 @@
 
             // Remove all the temporary labels.
             svg.selectAll('text.temp').remove();
-            var intervals = {{ intervals|safe }};
-            //console.log(intervals.start);
+
 
             //receive data from python
             final_result = {{ final_result|safe }};
@@ -555,6 +556,20 @@
             svg.call(paragraph_tip);
 
 
+            //prepare the scales (max and min of number of comparatives in a graph)
+            var min_comparatives = paragraphs.length;
+            var max_comparatives = 0;
+            for(var i=0;i<paragraphs.length;i++){
+                p_comparatives = paragraphs[i].paragraph_info.paragraph_comparative_number;
+                if(p_comparatives<min_comparatives) min_comparatives = p_comparatives;
+                if(p_comparatives>max_comparatives) max_comparatives = p_comparatives;
+
+            }
+            console.log("min comparatives="+min_comparatives);
+            console.log("max comparatives="+max_comparatives);
+            var color_scaler=d3.scale.linear().domain([min_comparatives,max_comparatives]).range(["DeepSkyBlue","MidnightBlue"]);
+
+            //draw the ticks
             svg.selectAll('.ticks').data(paragraphs).enter()
                 .append('g').attr('class', 'ticks')
                     .attr('transform', function(d){
@@ -571,6 +586,9 @@
                         .attr('x', 0)
                         .attr('rx', 3)
                         .attr('ry', 3)
+                    .style('fill', function(d){
+                        return color_scaler(d.paragraph_info.paragraph_comparative_number);
+                    })
                         .on('mouseover', paragraph_tip.show)
                         .on('mouseout', paragraph_tip.hide)
                         .on('click', function(d){
@@ -634,11 +652,62 @@
                      //return "translate(20,0) rotate(-45)";
                  })
                  //.attr("transform", "rotate(5)")
-
-
                  .text(function(d){return d.text;});
 
 
+                //draw legend title
+                legend_title = [
+                    { 'x':25, 'y':50, 'text': 'Number of comparative'},
+                    { 'x':25, 'y':70, 'text': 'sentences per'},
+                    { 'x':25, 'y':90, 'text': 'paragraph'},
+                ]
+                 svg.selectAll('.legend_titles').data(legend_title).enter()
+                     .append('g').attr('class', 'legend_titles')
+                     .append("text")
+                     .attr("x", function(d){return d.x})
+                     .attr("y", function(d){return d.y})
+                     .style("font-size", "16px")
+                     .text(function(d){return d.text});
+
+                 //draw the legend
+                 var legend_y = 120;
+                 var legend_x = 50;
+                 var legend_data = [];
+                 for(var i=min_comparatives;i<=max_comparatives;i++){
+                     var level = {};
+                     level.x = legend_x;
+                     level.y = (i-min_comparatives)*20 + legend_y;
+                     level.color = color_scaler(i);
+                     level.text = i;
+                     legend_data.push(level);
+                 }
+                 console.log(legend_data);
+                 svg.selectAll('.legends').data(legend_data).enter()
+                 .append('g').attr('class', 'legends')
+                    .attr('transform', function(d){
+                            var x,y;
+                            x = Math.round(d.x)+0.5 ;
+                            y = Math.round(d.y)+0.5;
+
+                            return 'translate('+[x,y]+')';
+                        })
+                    .append('rect')
+                        .attr('width', 20)
+                        .attr('height', 10)
+                        .attr('y', 0)
+                        .attr('x', 0)
+                        .attr('rx', 3)
+                        .attr('ry', 3)
+                    .style('fill', function(d){
+                        return d.color;
+                    })
+                    ;
+                    svg.selectAll('.legends')
+                        .append("text")
+                          .attr("x", 30)
+                          .attr("y", 5)
+                          .attr("dy", ".35em")
+                          .text(function(d) { return d.text; });
 
 
         });
@@ -665,5 +734,9 @@
         }
 
     </script>
+    <form action="SentenceGistGraph.html" method="GET">
+
+    <input type="submit" value="Submit" />
+</form>
 </body>
 </html>

@@ -5,7 +5,7 @@
     <title>Upload Single Document</title>
     <style type="text/css">
         .paste-form{
-            max-width: 500px;
+            max-width: 80%;
             padding: 10px 20px;
             background: #f4f7f8;
             margin: 10px auto;
@@ -48,6 +48,7 @@
 
         }
         .paste-form input[type="text"]:focus,
+
         .paste-form textarea:focus,
         .paste-form select:focus{
             background: #d2d9dd;
@@ -94,7 +95,7 @@
         }
         textarea {
             width: 100%;
-            height: 150px;
+            height: 300px;
             padding: 12px 20px;
             box-sizing: border-box;
             border: 2px solid #ccc;
@@ -107,6 +108,8 @@
             text-align: center;
             width: 100%;
         }
+
+
     </style>
 </head>
 <body>
@@ -114,15 +117,23 @@
     <div class="paste-form">
         <form action="visualizeSingleDoc" method="post">
             <h1> Paste your document and upload</h1>
+
             <fieldset>
                 <legend><span class="number">1</span> Title</legend>
                 <input type="text" name="title" placeholder="Paste title of the document here...">
             </fieldset>
             <fieldset>
-                <legend><span class="number">2</span> Content</legend>
+                <legend><span class="number">2</span> Time of Publication</legend>
+                <input class = 'inline_fields' style="width: 54px;" type="text" name="year" placeholder="YYYY">
+                <input class = 'inline_fields' style="width: 54px;" type="text" name="month" placeholder="MM">
+            </fieldset>
+            <fieldset>
+                <legend><span class="number">3</span> Content</legend>
                 <textarea name="content" placeholder="Paste documnet full text here..."></textarea>
             </fieldset>
+
             <input type="submit" value="Upload & Visualize" />
+
         </form>
     </div>
 </body>

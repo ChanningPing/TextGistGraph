@@ -316,40 +316,6 @@ def train_comparative(file_name):
 
 
 
-
-
-
-
-
-    #below is only for test
-    # 3. generate the sequence
-    sentence = '''If the multiple minimum
-    support class sequential rules are used alone for
-    classification, we achieve the precision of 58%, the recall of
-    71% and the F-score of 64%, which is a much better result
-    than those of the above methods.
-    '''
-    sequences = sentence_to_sequences(sentence, 0, window_size)
-
-    # 4. generate the features
-    sentence_object = {}
-    sentence_object['label'] = 0
-    sentence_object['sequences'] = sequences
-    sentence_object['sentence'] = sentence
-    features = get_features(sentence_object, CSR_Rules)
-
-
-    # 5. predict
-    print('[sentence]=' + sentence)
-    print('[dict]=')
-    print(CSR_Rules)
-    print('sequences')
-    print(sequences)
-    print('in the training phase, the predicted result=')
-    print(clf.predict(features))
-
-
-
 def read_classifier(classifier_file_name):
     '''
 
@@ -400,6 +366,7 @@ def predict_comparative(sentence,read_rule_dictionary, loaded_Bayes_classifier )
 
     # 3. generate the sequence
     sequences = sentence_to_sequences(sentence, 0, window_size)
+    print(sequences)
 
     # 4. generate the features
     sentence_object = {}
@@ -412,17 +379,20 @@ def predict_comparative(sentence,read_rule_dictionary, loaded_Bayes_classifier )
     ##print('in predict, length of the features'+str(len(features)))
 
     # 5. predict
-    print('[sentence]='+sentence)
+    #print('[sentence]='+sentence)
     #print('[dict]=')
     #print(read_rule_dictionary)
     #print('sequences')
     #print(sequences)
     #print('features')
     #print(features)
-    print('after reload the classifier, the predicted result=')
+    #print('after reload the classifier, the predicted result=')
+    features = X = np.array(features)
+    features = features.reshape(1, -1)
     class_result = loaded_Bayes_classifier.predict(features)
-    print(class_result)
-    return class_result
+    class_label = class_result[0]
+    print(class_label)
+    return class_label
 
 
 
@@ -434,8 +404,8 @@ def main():
     #train_comparative(file_name)
 
     #predict process
-    rule_dict_file_name = APP_STATIC + '/nlp/CSR/CSR_rules.csv'
-    classifier_file_name = APP_STATIC + '/nlp/CSR/classifier.sav'
+    #rule_dict_file_name = APP_STATIC + '/nlp/CSR/CSR_rules.csv'
+    #classifier_file_name = APP_STATIC + '/nlp/CSR/classifier.sav'
     sentence = 'Our model shows an improvement of about a significant improvement over previous state-of-the-art in both MAP and MRR when training on TRAIN and TRAIN-ALL'
 
 
