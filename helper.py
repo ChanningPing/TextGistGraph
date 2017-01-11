@@ -4,13 +4,14 @@ import codecs
 import pickle
 import os
 import string
+import collections
 import MSEntityLinking
 import ComparativeSentenceClassification
 from settings import APP_STATIC
 
 daily_limit = 10000
 max_heading_length = 200
-characters_dict = {}
+
 
 def get_structured_content (content, c):
     '''
@@ -32,6 +33,7 @@ def get_structured_content (content, c):
 
     printable = set(string.printable)
     content =  filter(lambda x: x in printable, content)
+    content = content.replace ('{', '<').replace('}','>').replace('[','<').replace(']','>')
     # 1. remove extra line breaks
     paragraphs = content.split('\n') # break full text into natural paragraphs
     for index, paragraph in enumerate(paragraphs):
@@ -45,6 +47,7 @@ def get_structured_content (content, c):
     all_paragraphs = []
     sentence_count = 0
     paragraph_count = 0
+    all_comparative_sentences = []
     for i, p in enumerate(paragraphs):
         structured_paragraph = {}
         paragraph_info = {}
@@ -55,26 +58,28 @@ def get_structured_content (content, c):
         ss = segmenter.tokenize(p)
         for j, s in enumerate(ss):
             sentence = {}
-            sentence_count += 1
+
 
             if s[0:1] == c and len(s) < max_heading_length:
                 ss[j] = s[1:]
                 chapter = {}
-                chapter['sentence_rank'] = j
-                chapter['sentence_id'] = 's_' + str(j)
+                chapter['sentence_rank'] = str(sentence_count)
+                chapter['sentence_id'] = 's_' + str(sentence_count)
                 chapter['paragraph_rank'] = i
                 chapter['paragraph_id'] = 'p_' + str(i)
                 chapter['text'] = ss[j]
                 chapters.append(chapter)
 
-            sentence['rank'] = j
-            sentence['id'] = 'st_' + str(j)
+            sentence['rank'] = sentence_count
+            sentence['id'] = 'st_' + str(sentence_count)
             sentence['text'] = ss[j]
             sentence['IsComparative'] = 0 #TODO: call function to test if ss[j] is comparative or not
             sentence['IsComparative'] = ComparativeSentenceClassification.predict_comparative(ss[j] , predict_tools['dict'],predict_tools['classifier'])
             if sentence['IsComparative'] == '1':
                 paragraph_comparative_number += 1
+                all_comparative_sentences.append(sentence['text'])
             sentences.append(sentence)
+            sentence_count += 1
         paragraph_info['rank'] = i
         paragraph_info['id'] = 'p_' + str(i)
         paragraph_info['entities'] = []
@@ -86,13 +91,14 @@ def get_structured_content (content, c):
 
     structured_content['chapters'] = chapters
     structured_content['all_paragraphs'] = all_paragraphs
+    structured_content['all_comparative_sentences'] = all_comparative_sentences
 
 
 
     return structured_content
 
 def get_entity_cooccurrence_in_paragraph(structured_content):
-    #TODO: combine paragraphs into 10k block for saving Microsoft Entity linking service limits
+    characters_dict = {}
     paragraphs = structured_content['all_paragraphs']
 
     block = '' # block text consisting of multiple paragraphs
@@ -118,10 +124,10 @@ def get_entity_cooccurrence_in_paragraph(structured_content):
             continue
         else:
             #print('block=' + block)
-            getEntityDictionary(block, prevOffset)
+            getEntityDictionary(block, prevOffset,characters_dict)
             prevOffset = prevOffset + len(block)
             block = p['paragraph_info']['text']
-    getEntityDictionary(block, prevOffset)
+    getEntityDictionary(block, prevOffset,characters_dict)
     #print('block=' + block)
 
     # get characters
@@ -154,9 +160,11 @@ def get_entity_cooccurrence_in_paragraph(structured_content):
                     curr_Paragraph_rank = p['paragraph_info']['rank']
                     break
         c['paragraph_occurrences'] = paragraph_occurrences
-        print('paragraph occurrences=')
-        print(paragraph_occurrences)
+        #print('paragraph occurrences=')
+        #print(paragraph_occurrences)
         c['sentence_occurrences'] = sentence_occurrences
+        print('sentence occurrence=')
+        print(sentence_occurrences)
 
     # 2. put characters co-occurring in a paragraph into a scene
     paragraph_scenes_dict = {} #key:paragraph_rank; value: entity_id
@@ -176,11 +184,10 @@ def get_entity_cooccurrence_in_paragraph(structured_content):
     for p in paragraphs:
         paragraph_id_text_dict[p['paragraph_info']['rank']] = p['paragraph_info']['text']
 
-
-
+    paragraph_scenes_dict = collections.OrderedDict(sorted(paragraph_scenes_dict.items()))
     for key, value in paragraph_scenes_dict.iteritems():#key: paragraph rank; value: character id list
-        print(key)
-        print(value)
+        #print(key)
+        #print(value)
         paragraph_scenes.append(list(set(value)))
         scene_info = {}
         scene_info['x'] = key #paragraph rank
@@ -212,6 +219,8 @@ def get_entity_cooccurrence_in_paragraph(structured_content):
                 entity_ids.append(c['id'])
                 sentence_scenes_dict[s_o] = entity_ids
 
+    print('the sentence scene dict=')
+    print(sentence_scenes_dict)
     sentence_scenes = []
     sentence_scenes_info = []
     #prepare a sentence dictionary, for looking up text based on rank
@@ -221,8 +230,9 @@ def get_entity_cooccurrence_in_paragraph(structured_content):
             sentence_id_text_dict[s['rank']] = s['text']
 
 
-
-    for key, value in sentence_scenes_dict.iteritems():#key: paragraph rank; value: character id list
+    print('in sentence scene dict, the key and value=')
+    sentence_scenes_dict = collections.OrderedDict(sorted(sentence_scenes_dict.items()))
+    for key, value in sentence_scenes_dict.iteritems():#key: sentence rank; value: character id list
         print(key)
         print(value)
         sentence_scenes.append(list(set(value)))
@@ -231,6 +241,10 @@ def get_entity_cooccurrence_in_paragraph(structured_content):
         scene_info['text'] = sentence_id_text_dict[key]
         sentence_scenes_info.append(scene_info)
 
+    print('sentence scenes=')
+    print(sentence_scenes)
+    print('sentence scene info=')
+    print(sentence_scenes_info)
     # 3. get all data needed
 
     final_result['scenes'] = sentence_scenes
@@ -240,9 +254,12 @@ def get_entity_cooccurrence_in_paragraph(structured_content):
     with open(APP_STATIC + '/data/data_sentence.json', 'w') as fp:
         json.dump(final_result, fp)
 
+
+
+    final_result['all_comparative_sentences'] = ['all_comparative_sentences']
     return final_result
 
-def getEntityDictionary(block, prevOffset):
+def getEntityDictionary(block, prevOffset, characters_dict):
     '''
     get the entities using Microsoft Entity linking, and calculate the offsets of entities
     :param block:  a block of combination of multiple paragraphs

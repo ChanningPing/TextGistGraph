@@ -166,7 +166,7 @@
             // Some defaults
             sceneWidth = 10;
             //width = scenes.length * sceneWidth * 4;
-            width = scenes.length *sceneWidth*3;
+            width = scenes.length *sceneWidth*5;
             height = 1400;
             labelSize = [150,15];
 
@@ -497,7 +497,7 @@
                     g.attr('transform', function(d){
                             var x,y;
                             x = Math.round(d.x);
-                            y = Math.round(d.y);
+                            y = Math.round(d.y)>0? Math.round(d.y) : 5;
                             return 'translate(' + [x,y] + ')';
                         });
 
@@ -734,9 +734,9 @@
         }
 
     </script>
-    <form action="SentenceGistGraph.html" method="GET">
+    <form action="visualizeSentences" target="_blank" method="POST">
 
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Visualize Sentences" />
 </form>
 </body>
 </html>
