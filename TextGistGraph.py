@@ -12,6 +12,7 @@ title = ''
 content = ''
 year = ''
 month = ''
+user_defined_entities = ''
 final_result = {}
 comparative_info = {}
 
@@ -30,23 +31,24 @@ def index():
 @app.route('/visualizeSingleDoc', methods=['POST']) #visualize one paper in unit of paragraphs
 def visualizeSingleDoc():
     # 1. get data from the upload page
-    global title, content, year, month, final_result, comparative_info
+    global title, content, year, month, user_defined_entities, final_result, comparative_info
     title = request.form['title']#get title of the paper
     content = request.form['content']#get content of the paper
     year = request.form['year']#get year of the paper
     month = request.form['month']#get month of the paper
+    user_defined_entities = request.form['user_defined_entities']
     print('year='+str(year)+',month='+str(month))
 
     # 2. process and generate visualization data using helper function
-    final_result = helper.JsonResult(content)#use json to store intermediate data
+    final_result = helper.JsonResult(content, user_defined_entities)#use json to store intermediate data
 
     # 3. store the comparative sentences into a global variable
     #TODO: extract entities and relations of comparative sentences, and use arc diagram to visualize
-    comparative_info = get_comparative_triples(final_result['all_comparative_sentences'])
+    #comparative_info = get_comparative_triples(final_result['all_comparative_sentences'])
 
     # 4. visualize the paper by paragraph
     name = 'data_paragraph' # json data file name
-    return render_template('GistGraph.html', name=name, title=title, final_result=json.dumps(final_result))
+    return render_template('GistGraph.html', name=name, title=title,final_result=json.dumps(final_result))
 
 @app.route('/visualizeSentences', methods=['POST'])#visualize one paper in unit of sentences
 def visualizeSentences():

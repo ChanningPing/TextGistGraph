@@ -97,10 +97,23 @@ def get_structured_content (content, c):
 
     return structured_content
 
-def get_entity_cooccurrence_in_paragraph(structured_content):
+def get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entities):
     characters_dict = {}
     paragraphs = structured_content['all_paragraphs']
+    # handle the user defined entities
+    user_defined_entity_list = []
+    for entity in user_defined_entities.split(';'):
+        entity_info = {}
+        entity_info['name'] = entity
+        entity_info['id'] = ('_').join(word for word in entity.split(' '))
+        entity_info['frequency'] = 0
+        entity_info['paragraph_occurrences'] = []
+        entity_info['sentence_occurrences'] = []
+        user_defined_entity_list.append(entity_info)
+    print('the user_defined_entity_dict=')
+    print(user_defined_entity_list)
 
+    # for block batch of paragraphs
     block = '' # block text consisting of multiple paragraphs
     prevOffset = 0 # length of the previous block
     paragraph_start = 0 #
@@ -166,6 +179,42 @@ def get_entity_cooccurrence_in_paragraph(structured_content):
         print('sentence occurrence=')
         print(sentence_occurrences)
 
+    # prepare a paragraph dictionary, for looking up text based on rank
+    # also calculate the paragraph/sentence occurrences of user defined entities
+    paragraph_id_text_dict = {}
+    for p in paragraphs:
+        paragraph_id_text_dict[p['paragraph_info']['rank']] = p['paragraph_info']['text']
+
+        # FYI, handle the user defined entities
+        for entity in user_defined_entity_list:
+            print('paragraph_info text=' + p['paragraph_info']['text'])
+            print('is it true?' + str(entity['name'] in p['paragraph_info']['text']))
+            if entity['name'] in p['paragraph_info']['text']:
+                entity['frequency'] += p['paragraph_info']['text'].count(entity['name'])
+                entity['paragraph_occurrences'].append(p['paragraph_info']['rank'])
+
+        for s in p['sentences']:
+            for entity in user_defined_entity_list:
+                if entity['name'] in s['text']:
+                    entity['sentence_occurrences'].append(s['rank'])
+
+
+
+    # add user defined entities into characters
+    for entity in user_defined_entity_list:
+        character = {}
+        character['id'] = ('_').join(word for word in entity['name'].split(' '))
+        character['affiliation'] = 'light'
+        character['name'] = entity['name']
+        character['offsets'] = []
+        character['frequency'] = entity['frequency']
+        character['paragraph_occurrences'] = entity['paragraph_occurrences']
+        character['sentence_occurrences'] = entity['sentence_occurrences']
+        characters.append(character)
+
+
+
+
     # 2. put characters co-occurring in a paragraph into a scene
     paragraph_scenes_dict = {} #key:paragraph_rank; value: entity_id
     for c in characters:
@@ -179,10 +228,12 @@ def get_entity_cooccurrence_in_paragraph(structured_content):
 
     paragraph_scenes = []
     paragraph_scenes_info = []
-    #prepare a paragraph dictionary, for looking up text based on rank
-    paragraph_id_text_dict = {}
-    for p in paragraphs:
-        paragraph_id_text_dict[p['paragraph_info']['rank']] = p['paragraph_info']['text']
+
+
+
+
+
+
 
     paragraph_scenes_dict = collections.OrderedDict(sorted(paragraph_scenes_dict.items()))
     for key, value in paragraph_scenes_dict.iteritems():#key: paragraph rank; value: character id list
@@ -193,6 +244,10 @@ def get_entity_cooccurrence_in_paragraph(structured_content):
         scene_info['x'] = key #paragraph rank
         scene_info['text'] = paragraph_id_text_dict[key]
         paragraph_scenes_info.append(scene_info)
+
+
+
+
 
     # 3. get all data needed
     final_result ={}
@@ -300,7 +355,7 @@ def getEntityDictionary(block, prevOffset, characters_dict):
                     characters_dict[entity_key] = entity_value
 
 
-def JsonResult(content):
+def JsonResult(content,user_defined_entities):
     '''
     :param content: full text of a paper
     :return:
@@ -308,7 +363,7 @@ def JsonResult(content):
 
     structured_content = get_structured_content (content, '#')
     print('succeed to get structured content...')
-    final_result = get_entity_cooccurrence_in_paragraph(structured_content)
+    final_result = get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entities)
     print('succeed to get entity offsets on paragraph level...')
 
     return final_result
