@@ -9,7 +9,7 @@
 		font-family: "ProximaNova",Helvetica,Arial,sans-serif;
 		font-size: 12px;
         font-weight: bold;
-        color: red;
+        color: #df2929;
 	}
 	rect {
 		fill: none;
@@ -97,7 +97,8 @@
         white-space: -moz-pre-wrap; /* Mozilla */
         white-space: -hp-pre-wrap;  /* HP Printers */
         word-wrap: break-word;      /* IE 5+ */
-            width: 98%;
+        width: 98%;
+        font-family: Arial, Helvetica, sans-serif;
 	}
     span{
         display: inline;
@@ -178,7 +179,10 @@
                 .on("click", function(d){
                     console.log('clicked the blank space!');
                     svg.selectAll('.link')
-                            .style('opacity',1);
+                            .style('opacity',1)
+                            .style("stroke", '#3c6da8')           // colour the line
+                            .style("stroke-width", 2)
+                            ;
 
                 })
 
@@ -394,6 +398,7 @@
                             for(var i=0;i<d.characters.length;i++){
                                 id_map[d.characters[i].id]=1;
                             }
+                            console.log('i want highlight!')
                             svg.selectAll('.link')
                                      .style('opacity',function(d){
                                          if (d.source.character.id in id_map || d.target.character.id in id_map) {
@@ -402,6 +407,22 @@
                                              return 0.2;
                                          }
                                      })
+                                     .style("stroke", function(d){
+                                             if (d.source.character.id in id_map || d.target.character.id in id_map) {
+                                                 return '#df2929';
+                                             }else{
+                                                 return '#3c6da8';
+                                             }
+                                         })           // colour the line
+                                    .style("stroke-width", function(d){
+                                             if (d.source.character.id in id_map || d.target.character.id in id_map) {
+                                                 return 3;
+                                             }else{
+                                                 return 2;
+                                             }
+                                    })
+
+
                             document.getElementById(d.id).focus();
                             //document.querySelector('#'+d.id).scrollIntoView({
                                 //behavior: 'smooth'
@@ -420,6 +441,7 @@
                         .attr('x', 0)
                         .attr('rx', 3)
                         .attr('ry', 3)
+
                         //.call(drag)
 
                         ;
@@ -479,6 +501,22 @@
                                              return 0.2;
                                          }
                                      })
+                                    .style("stroke", function(d1){
+                                             if (d1.source.character.id == d.character.id ||
+                                                d1.target.character.id == d.character.id) {
+                                                 return '#df2929';
+                                             }else{
+                                                 return '#3c6da8';
+                                             }
+                                         })           // colour the line
+                                    .style("stroke-width", function(d1){
+                                             if (d1.source.character.id == d.character.id ||
+                                                d1.target.character.id == d.character.id) {
+                                                 return 3;
+                                             }else{
+                                                 return 2;
+                                             }
+                                    })
                             d3.event.stopPropagation();
                         });
 
@@ -710,7 +748,234 @@
                           .text(function(d) { return d.text; });
 
 
+
+
+                    //draw the entity frequencies
+                     characters = narrative.characters();
+                    characters.sort(function(a, b) {
+                        return -(a.frequency - b.frequency);
+                    })
+
+                    var axisMargin = 5,
+                            margin = 40,
+                            valueMargin = 5,
+                            width = parseInt(d3.select('body').style('width'), 10)/2,
+                            height = parseInt(d3.select('body').style('height'), 10)/2,
+                            barHeight = (height-axisMargin-margin*2)* 0.7/characters.length,
+                            barPadding = (height-axisMargin-margin*2)*0.3/characters.length,
+                            data, bar, svg, scale, xAxis, labelWidth = 0;
+
+                    var max = d3.max(characters, function(d) { return d.frequency; });
+
+                    var chart_entity_frequency = d3.select('body')
+                            .append("svg")
+                            .attr("width", width)
+                            .attr("height", height);
+
+                    chart_entity_frequency.append("text")
+                            .attr("x", (width / 2))
+                            .attr("y", 13)
+                            .attr("text-anchor", "middle")
+                            .style("font-size", "16px")
+                            .text("Entity frequency from high to low (in terms of sentences)");
+
+                    bar = chart_entity_frequency.selectAll("g")
+                            .data(characters)
+                            .enter()
+                            .append("g");
+
+                    bar.attr("class", "bar")
+                            .attr("cx",0)
+                            .attr("transform", function(d, i) {
+                                return "translate(" + margin + "," + (i * (barHeight + barPadding) + barPadding + 20) + ")";
+                            });
+
+                    bar.append("text")
+                            .attr("class", "label")
+                            .attr("y", barHeight / 2)
+                            .attr("dy", ".35em") //vertical align middle
+                            .text(function(d){
+                                return d.name;
+                            }).each(function() {
+                                labelWidth = Math.ceil(Math.max(labelWidth, this.getBBox().width));
+                            })
+                            .on("click", function(d){
+                                console.log('click the ranked entites!');
+                                svg.selectAll('.link')
+                                         .style('opacity',function(d1){
+                                             if (d1.source.character.id == d.id ||
+                                                d1.target.character.id == d.id) {
+                                                 return 1;
+                                             }else{
+                                                 return 0.2;
+                                             }
+                                         })
+                                         .style("stroke", function(d1){
+                                             if (d1.source.character.id == d.id ||
+                                                d1.target.character.id == d.id) {
+                                                 return '#df2929';
+                                             }else{
+                                                 return '#3c6da8';
+                                             }
+                                         })           // colour the line
+                                         .style("stroke-width", function(d1){
+                                             if (d1.source.character.id == d.id ||
+                                                d1.target.character.id == d.id) {
+                                                 return 3;
+                                             }else{
+                                                 return 2;
+                                             }
+                                         })
+                                d3.event.stopPropagation();
+                            })
+                    ;
+
+                    scale = d3.scale.linear()
+                            .domain([0, max])
+                            .range([0, width - margin*2 - labelWidth]);
+
+                    xAxis = d3.svg.axis()
+                            .scale(scale)
+                            .tickSize(-height + 2*margin + axisMargin)
+                            .orient("bottom");
+
+                    bar.append("rect")
+                            .attr("transform", "translate("+(labelWidth+5)+", 0)")
+                            .attr("height", barHeight)
+                            .attr("width", function(d){
+                                return scale(d.frequency);
+                            })
+                            .style('fill','#3c6da8')
+                    ;
+
+                    bar.append("text")
+                            .attr("class", "value")
+                            .attr("y", barHeight / 2)
+                            .attr("dx", -valueMargin + labelWidth) //margin right
+                            .attr("dy", ".35em") //vertical align middle
+                            .attr("text-anchor", "end")
+                            .text(function(d){
+                                return (d.frequency);
+                            })
+                            .attr("x", function(d){
+                                var width = this.getBBox().width;
+                                return Math.max(width + valueMargin, scale(d.frequency)) + 25;
+                            });
+
+
+                    chart_entity_frequency.insert("g",":first-child")
+                            .attr("class", "axisHorizontal")
+                            .attr("transform", "translate(" + (margin + labelWidth + 5) + ","+ (height - axisMargin -2* margin +20)+")")
+                            .call(xAxis);
+
+
+
+            //draw entity network
+            //prepare data for entity network
+
+
+
+                    var dataset = {
+                            nodes: [
+                                    { name: "Adam", frequency: 3 },
+                                    { name: "Bob" , frequency: 4},
+                                    { name: "Carrie", frequency: 3 },
+                                    { name: "Donovan" , frequency: 17},
+                                    { name: "Edward" , frequency: 11},
+                                    { name: "Felicity", frequency: 2 },
+                                    { name: "George", frequency: 1 },
+                                    { name: "Hannah", frequency: 1 },
+                                    { name: "Iris", frequency: 1 },
+                                    { name: "Jerry" , frequency: 1}
+                            ],
+                            edges: [
+                                    { source: 0, target: 1 , cooccurrences: 2},
+                                    { source: 0, target: 2, cooccurrences: 1 },
+                                    { source: 0, target: 3, cooccurrences: 1 },
+                                    { source: 0, target: 4, cooccurrences: 1 },
+                                    { source: 1, target: 5 , cooccurrences: 2},
+                                    { source: 2, target: 5 , cooccurrences: 1},
+                                    { source: 2, target: 5 , cooccurrences: 1},
+                                    { source: 3, target: 4 , cooccurrences: 1},
+                                    { source: 5, target: 8 , cooccurrences: 1},
+                                    { source: 5, target: 9 , cooccurrences: 3},
+                                    { source: 6, target: 7 , cooccurrences: 1},
+                                    { source: 7, target: 8 , cooccurrences: 2},
+                                    { source: 8, target: 9 , cooccurrences: 1}
+                            ]
+                    };
+
+
+
+                    var force = d3.layout.force()
+                     .nodes(dataset.nodes)
+                     .links(dataset.edges)
+                     .size([width, height])
+                     .linkDistance([50])        // <-- New!
+                     .charge([-300])            // <-- New!
+                     .start();
+
+                    var chart_entity_network = d3.select("body")
+						.append("svg")
+						.attr("width", width)
+						.attr("height", height);
+
+                    chart_entity_network.append("text")
+                            .attr("x", (width / 2))
+                            .attr("y", 13)
+                            .attr("text-anchor", "middle")
+                            .style("font-size", "16px")
+                            .text("Entity co-occurrence network (in terms of sentences)");
+
+                    var edges = chart_entity_network.selectAll("line")
+                        .data(dataset.edges)
+                        .enter()
+                        .append("line")
+                        .style("stroke", "#ccc")
+                        .style("stroke-width", function(d){return d.cooccurrences});
+                    var nodes = chart_entity_network.selectAll("circle")
+                        .data(dataset.nodes)
+                        .enter()
+                        .append("circle")
+                            .attr("r", function(d){return d.frequency})
+                            .style("fill", '#cceeff')
+                            .style("stroke", "#3c6da8")
+                            .style("stroke-width", 5)
+                            .call(force.drag);
+                    var nodelabels = chart_entity_network.selectAll(".nodelabel")
+                       .data(dataset.nodes)
+                       .enter()
+                       .append("text")
+                       .attr({"x":function(d){return d.x;},
+                              "y":function(d){return d.y;},
+                              "class":"nodelabel",
+                              "stroke":"black"})
+                       .text(function(d){return d.name;});
+
+                    force.on("tick", function() {
+
+                        edges.attr("x1", function(d) { return d.source.x; })
+                             .attr("y1", function(d) { return d.source.y; })
+                             .attr("x2", function(d) { return d.target.x; })
+                             .attr("y2", function(d) { return d.target.y; });
+
+                        nodes.attr("cx", function(d) { return d.x; })
+                             .attr("cy", function(d) { return d.y; });
+
+                        nodelabels.attr("x", function(d) { return d.x; })
+                              .attr("y", function(d) { return d.y; });
+
+                     });
+
+
+
         });
+
+
+
+
+
+
 
         function wrangle(data) {
 

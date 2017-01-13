@@ -3,6 +3,7 @@ import json
 import codecs
 import pickle
 import os
+import itertools
 import string
 import collections
 import MSEntityLinking
@@ -211,6 +212,7 @@ def get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entitie
         character['paragraph_occurrences'] = entity['paragraph_occurrences']
         character['sentence_occurrences'] = entity['sentence_occurrences']
         characters.append(character)
+        characters_dict[character['id']] = character
 
 
 
@@ -310,8 +312,38 @@ def get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entitie
         json.dump(final_result, fp)
 
 
+    # use sentence scenes to get entityt co-occurrences in terms of sentences
+    unique_scene_id = 0
+    co_occurrence_entity_id_dict ={}
+    co_occurrence_pairs = []
+    for scene in sentence_scenes:
+        if len(scene)>1: #if there are at least 2 entities in a sentence
+            for entity in scene:
+                if entity not in co_occurrence_entity_id_dict:
+                    entity_info = {}
+                    entity = str(entity)
+                    entity_info['name'] = characters_dict[entity]['name']
+                    entity_info['frequency'] = characters_dict[entity]['frequency']
+                    entity_info['id'] = unique_scene_id
+                    co_occurrence_entity_id_dict[entity] = entity_info
+                    unique_scene_id += 1
+            all_pairs = list(itertools.combinations(range(len(scene)), 2))
+            for pair in all_pairs:
+                pair_entry = {}
+                pair_entry['source'] = co_occurrence_entity_id_dict[scene[pair[0]]]['id']
+                pair_entry['target'] = co_occurrence_entity_id_dict[scene[pair[1]]]['id']
+                pair_entry['target'] = 1
+                co_occurrence_pairs.append(pair_entry)
+    print('entities and co-occurrences:')
+    print(co_occurrence_entity_id_dict)
+    print(co_occurrence_pairs)
+    #TODO: aggregate link frequencies
 
-    final_result['all_comparative_sentences'] = ['all_comparative_sentences']
+
+
+    final_result['all_comparative_sentences'] = structured_content['all_comparative_sentences']
+
+
     return final_result
 
 def getEntityDictionary(block, prevOffset, characters_dict):
