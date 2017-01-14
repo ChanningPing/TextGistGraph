@@ -315,7 +315,7 @@ def get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entitie
     # use sentence scenes to get entityt co-occurrences in terms of sentences
     unique_scene_id = 0
     co_occurrence_entity_id_dict ={}
-    co_occurrence_pairs = []
+    co_occurrence_pairs_dict = {}
     for scene in sentence_scenes:
         if len(scene)>1: #if there are at least 2 entities in a sentence
             for entity in scene:
@@ -327,17 +327,37 @@ def get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entitie
                     entity_info['id'] = unique_scene_id
                     co_occurrence_entity_id_dict[entity] = entity_info
                     unique_scene_id += 1
-            all_pairs = list(itertools.combinations(range(len(scene)), 2))
+            all_pairs = list(itertools.combinations(range(len(scene)), 2)) #get all possible index pairs for the characters in teh scene
             for pair in all_pairs:
-                pair_entry = {}
-                pair_entry['source'] = co_occurrence_entity_id_dict[scene[pair[0]]]['id']
-                pair_entry['target'] = co_occurrence_entity_id_dict[scene[pair[1]]]['id']
-                pair_entry['target'] = 1
-                co_occurrence_pairs.append(pair_entry)
+                source = co_occurrence_entity_id_dict[scene[pair[0]]]['id']
+                target = co_occurrence_entity_id_dict[scene[pair[1]]]['id']
+                key = str(source )+ '_' + str(target ) # source_target
+                if key in co_occurrence_pairs_dict:
+                    co_occurrence_pairs_dict[key]['cooccurrences'] += 1
+                else:
+                    pair_entry = {}  # 0=source, 1=target, 2=source_target, 3=frequency
+                    pair_entry['source'] = source #source
+                    pair_entry['target'] = target #target
+                    pair_entry['cooccurrences'] = 1
+                    co_occurrence_pairs_dict[key] = pair_entry
     print('entities and co-occurrences:')
     print(co_occurrence_entity_id_dict)
-    print(co_occurrence_pairs)
-    #TODO: aggregate link frequencies
+    print(co_occurrence_pairs_dict)
+
+    from operator import itemgetter
+
+
+    nodes = co_occurrence_entity_id_dict.values()
+    edges = co_occurrence_pairs_dict.values()
+    #sort the nodes based on their ids (d3 force layout only track id based on the order of nodes appear, not by id you give)
+    nodes = sorted(nodes, key=itemgetter('id'))
+    co_occurrence_network = {}
+    co_occurrence_network['nodes'] = nodes
+    co_occurrence_network['edges'] = edges
+    print(co_occurrence_network)
+    final_result['co_occurrence_network'] = co_occurrence_network
+
+
 
 
 

@@ -859,7 +859,7 @@
                             })
                             .attr("x", function(d){
                                 var width = this.getBBox().width;
-                                return Math.max(width + valueMargin, scale(d.frequency)) + 25;
+                                return Math.max(width + valueMargin, scale(d.frequency)) + 35;
                             });
 
 
@@ -875,7 +875,7 @@
 
 
 
-                    var dataset = {
+                var dataset = {
                             nodes: [
                                     { name: "Adam", frequency: 3 },
                                     { name: "Bob" , frequency: 4},
@@ -889,35 +889,38 @@
                                     { name: "Jerry" , frequency: 1}
                             ],
                             edges: [
-                                    { source: 0, target: 1 , cooccurrences: 2},
-                                    { source: 0, target: 2, cooccurrences: 1 },
-                                    { source: 0, target: 3, cooccurrences: 1 },
-                                    { source: 0, target: 4, cooccurrences: 1 },
-                                    { source: 1, target: 5 , cooccurrences: 2},
-                                    { source: 2, target: 5 , cooccurrences: 1},
-                                    { source: 2, target: 5 , cooccurrences: 1},
-                                    { source: 3, target: 4 , cooccurrences: 1},
-                                    { source: 5, target: 8 , cooccurrences: 1},
-                                    { source: 5, target: 9 , cooccurrences: 3},
-                                    { source: 6, target: 7 , cooccurrences: 1},
-                                    { source: 7, target: 8 , cooccurrences: 2},
-                                    { source: 8, target: 9 , cooccurrences: 1}
+                                    { 'source': 0, 'target': 1 , 'cooccurrences': 2},
+                                    { 'source': 0, 'target': 2, 'cooccurrences': 1 },
+                                    { 'source': 0, 'target': 3, 'cooccurrences': 1 },
+                                    { 'source': 0, 'target': 4, 'cooccurrences': 1 },
+                                    { 'source': 1, 'target': 5 , 'cooccurrences': 2},
+                                    { 'source': 2, 'target': 5 , 'cooccurrences': 1},
+                                    { 'source': 2, 'target': 5 , 'cooccurrences': 1},
+                                    { 'source': 3, 'target': 4 , 'cooccurrences': 1},
+                                    { 'source': 5, 'target': 8 , 'cooccurrences': 1},
+                                    { 'source': 5, 'target': 9 , 'cooccurrences': 3},
+                                    { 'source': 6, 'target': 7 , 'cooccurrences': 1},
+                                    { 'source': 7, 'target': 8 , 'cooccurrences': 2},
+                                    { 'source': 8, 'target': 9 , 'cooccurrences': 1}
                             ]
                     };
 
+                    var dataset = final_result.co_occurrence_network;
+                    console.log('dataset = ')
+                    console.log(dataset)
 
 
                     var force = d3.layout.force()
                      .nodes(dataset.nodes)
                      .links(dataset.edges)
                      .size([width, height])
-                     .linkDistance([50])        // <-- New!
+                     .linkDistance([80])        // <-- New!
                      .charge([-300])            // <-- New!
                      .start();
 
                     var chart_entity_network = d3.select("body")
 						.append("svg")
-						.attr("width", width)
+						.attr("width", width*2)
 						.attr("height", height);
 
                     chart_entity_network.append("text")
@@ -937,7 +940,7 @@
                         .data(dataset.nodes)
                         .enter()
                         .append("circle")
-                            .attr("r", function(d){return d.frequency})
+                            .attr("r", function(d){return Math.sqrt(d.frequency)})
                             .style("fill", '#cceeff')
                             .style("stroke", "#3c6da8")
                             .style("stroke-width", 5)
