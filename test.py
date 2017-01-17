@@ -1,5 +1,3 @@
-data = [[1,2,3],
-        [1,2,3]]
-
-column = 1
-print sum(row[column] for row in data)
+import string
+s = "a negative! facdotraiztion: based on , oscar's razors "
+print(s.translate(None, string.punctuation))

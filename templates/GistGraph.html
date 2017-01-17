@@ -875,35 +875,7 @@
 
 
 
-                var dataset = {
-                            nodes: [
-                                    { name: "Adam", frequency: 3 },
-                                    { name: "Bob" , frequency: 4},
-                                    { name: "Carrie", frequency: 3 },
-                                    { name: "Donovan" , frequency: 17},
-                                    { name: "Edward" , frequency: 11},
-                                    { name: "Felicity", frequency: 2 },
-                                    { name: "George", frequency: 1 },
-                                    { name: "Hannah", frequency: 1 },
-                                    { name: "Iris", frequency: 1 },
-                                    { name: "Jerry" , frequency: 1}
-                            ],
-                            edges: [
-                                    { 'source': 0, 'target': 1 , 'cooccurrences': 2},
-                                    { 'source': 0, 'target': 2, 'cooccurrences': 1 },
-                                    { 'source': 0, 'target': 3, 'cooccurrences': 1 },
-                                    { 'source': 0, 'target': 4, 'cooccurrences': 1 },
-                                    { 'source': 1, 'target': 5 , 'cooccurrences': 2},
-                                    { 'source': 2, 'target': 5 , 'cooccurrences': 1},
-                                    { 'source': 2, 'target': 5 , 'cooccurrences': 1},
-                                    { 'source': 3, 'target': 4 , 'cooccurrences': 1},
-                                    { 'source': 5, 'target': 8 , 'cooccurrences': 1},
-                                    { 'source': 5, 'target': 9 , 'cooccurrences': 3},
-                                    { 'source': 6, 'target': 7 , 'cooccurrences': 1},
-                                    { 'source': 7, 'target': 8 , 'cooccurrences': 2},
-                                    { 'source': 8, 'target': 9 , 'cooccurrences': 1}
-                            ]
-                    };
+
 
                     var dataset = final_result.co_occurrence_network;
                     console.log('dataset = ')
@@ -914,13 +886,13 @@
                      .nodes(dataset.nodes)
                      .links(dataset.edges)
                      .size([width, height])
-                     .linkDistance([80])        // <-- New!
-                     .charge([-300])            // <-- New!
+                     .linkDistance([100])        // <-- New!
+                     .charge([-1000])            // <-- New!
                      .start();
 
                     var chart_entity_network = d3.select("body")
 						.append("svg")
-						.attr("width", width*2)
+						.attr("width", width)
 						.attr("height", height);
 
                     chart_entity_network.append("text")
@@ -935,7 +907,7 @@
                         .enter()
                         .append("line")
                         .style("stroke", "#ccc")
-                        .style("stroke-width", function(d){return d.cooccurrences});
+                        .style("stroke-width", function(d){return d.cooccurrences/2});
                     var nodes = chart_entity_network.selectAll("circle")
                         .data(dataset.nodes)
                         .enter()

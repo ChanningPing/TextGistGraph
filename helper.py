@@ -98,7 +98,7 @@ def get_structured_content (content, c):
 
     return structured_content
 
-def get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entities):
+def get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entities, file_name):
     characters_dict = {}
     paragraphs = structured_content['all_paragraphs']
     # handle the user defined entities
@@ -260,7 +260,7 @@ def get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entitie
     final_result['all_paragraphs'] = paragraphs
 
 
-    with open(APP_STATIC + '/data/data_paragraph.json', 'w') as fp:
+    with open(APP_STATIC + '/data/' + file_name + '_paragraphs.json', 'w') as fp:
         json.dump(final_result, fp)
 
 
@@ -308,7 +308,7 @@ def get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entitie
     final_result['sentence_scenes_info'] = sentence_scenes_info
 
 
-    with open(APP_STATIC + '/data/data_sentence.json', 'w') as fp:
+    with open(APP_STATIC + '/data/' + file_name + '_sentences.json', 'w') as fp:
         json.dump(final_result, fp)
 
 
@@ -407,7 +407,7 @@ def getEntityDictionary(block, prevOffset, characters_dict):
                     characters_dict[entity_key] = entity_value
 
 
-def JsonResult(content,user_defined_entities):
+def JsonResult(content,user_defined_entities, file_name):
     '''
     :param content: full text of a paper
     :return:
@@ -415,7 +415,7 @@ def JsonResult(content,user_defined_entities):
 
     structured_content = get_structured_content (content, '#')
     print('succeed to get structured content...')
-    final_result = get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entities)
+    final_result = get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entities, file_name)
     print('succeed to get entity offsets on paragraph level...')
 
     return final_result
