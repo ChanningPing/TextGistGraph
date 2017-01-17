@@ -473,14 +473,20 @@
             .attr("cx", function(d,i) {return nodeDisplayX(d);})
             .attr("r", function(d,i) {return mapRange(d.value, nodeValMin, nodeValMax, 2.5, 13);})
             .attr("fill", function(d,i) {return colors(d.group);})
-            .attr("stroke", function(d,i) {return d3.rgb(colors(d.group)).darker(1);})
+            //.attr("stroke", function(d,i) {return d3.rgb(colors(d.group)).darker(1);})
             .on("mouseover", nodeOver)
+            .on("mouseout", nodeOut)
         //TODO: mouseout
         ;
 
         function nodeOver(d,i) {
-            d3.selectAll("circle").style("fill", function (p) {return p == d ? "red" : "lightgray"})
-            d3.selectAll("path").style("fill", function (p) {return p.source == d.id || p.target == d.id ? "red" : "lightgray"})
+            d3.selectAll("circle").style("fill", function (p) {return p == d ? "#f2734f" : "lightgray"})
+            d3.selectAll("path").style("fill", function (p) {return p.source == d.id || p.target == d.id ? "#3c6da8" : "lightgray"})
+        }
+
+        function nodeOut(d,i) {
+            d3.selectAll("circle").style("fill", function(d,i) {return colors(d.group);})
+            d3.selectAll("path").style("fill", "grey")
         }
 
         function textTransform(node){
