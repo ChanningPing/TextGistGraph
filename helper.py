@@ -103,14 +103,19 @@ def get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entitie
     paragraphs = structured_content['all_paragraphs']
     # handle the user defined entities
     user_defined_entity_list = []
-    for entity in user_defined_entities.split(';'):
-        entity_info = {}
-        entity_info['name'] = entity
-        entity_info['id'] = ('_').join(word for word in entity.split(' '))
-        entity_info['frequency'] = 0
-        entity_info['paragraph_occurrences'] = []
-        entity_info['sentence_occurrences'] = []
-        user_defined_entity_list.append(entity_info)
+
+    if user_defined_entities:
+        for entity in user_defined_entities.split(';'):
+            entity_info = {}
+            entity_info['name'] = entity
+            entity_info['id'] = ('_').join(word for word in entity.split(' '))
+            entity_info['frequency'] = 0
+            entity_info['paragraph_occurrences'] = []
+            entity_info['sentence_occurrences'] = []
+            user_defined_entity_list.append(entity_info)
+    else:
+        user_defined_entity_list = []
+
     print('the user_defined_entity_dict=')
     print(user_defined_entity_list)
 

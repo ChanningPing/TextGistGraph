@@ -6,6 +6,7 @@ import codecs
 import time
 import helper
 import string
+import collectionNetwork
 
 
 app = Flask(__name__)
@@ -17,9 +18,7 @@ month = ''
 user_defined_entities = ''
 final_result = {}
 comparative_info = {}
-title_dict = {}
-number_of_papers = 0
-paper_scene_dict = [] # key: integer_paper_id; value: {title, }
+paper_scene_list = []
 
 
 
@@ -38,7 +37,7 @@ def visualizeSingleDoc():
     # 1. get data from the upload page
     global title, file_title, content, year, month, user_defined_entities, \
         final_result, comparative_info, sentence_scenes,sentence_scenes_info, \
-        number_of_papers
+        paper_scene_list
     title = request.form['title']#get title of the paper
     content = request.form['content']#get content of the paper
     year = request.form['year']#get year of the paper
@@ -48,8 +47,6 @@ def visualizeSingleDoc():
 
     # get accumulated data
     file_title = str(title).translate(None, string.punctuation) #title without punctuations
-    number_of_papers += 1 # how many papers so far, also paper id
-    title_dict[number_of_papers] = file_title # key: paper_id, value: paper_title
 
 
     # 2. process and generate visualization data using helper function
@@ -59,7 +56,10 @@ def visualizeSingleDoc():
     paper_scenes = {}
     paper_scenes['sentence_scenes'] = final_result['scenes']
     paper_scenes['sentence_scenes_info'] = final_result['sentence_scenes_info']
-    paper_scene_list.append()
+    paper_scenes['year'] = year
+    paper_scenes['month'] = month
+    paper_scenes['title'] = file_title
+    paper_scene_list.append(paper_scenes)
 
 
 
@@ -75,7 +75,9 @@ def visualizeSentences(): #visualize the paper by sentences
 
 @app.route('/visualizeCollection', methods=['POST'])
 def visualizeCollection():
-    return render_template('CollectionGraph.html', title=title, final_result=json.dumps(final_result))
+    #print(paper_scene_list)
+    network_data = collectionNetwork.generate_network(paper_scene_list)
+    return render_template('CollectionGraph.html', title=title, network_data = json.dumps(network_data))
 
 
 if __name__ == "__main__":
