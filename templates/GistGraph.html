@@ -567,7 +567,7 @@
 
             //scale = (size[0]-labelSize[0])/duration;
             scale = narrative.scale();
-            tick_height = 280;
+            tick_height = size[1]-50;
 
 
             console.log('in html, the duration='+duration);
@@ -758,9 +758,9 @@
 
                     var axisMargin = 5,
                             margin = 40,
-                            valueMargin = 5,
-                            width = parseInt(d3.select('body').style('width'), 10)/2,
-                            height = parseInt(d3.select('body').style('height'), 10)/2,
+                            valueMargin = 15,
+                            width = parseInt(d3.select('body').style('width'), 10),
+                            height = parseInt(d3.select('body').style('height'), 10),
                             barHeight = (height-axisMargin-margin*2)* 0.7/characters.length,
                             barPadding = (height-axisMargin-margin*2)*0.3/characters.length,
                             data, bar, svg, scale, xAxis, labelWidth = 0;
@@ -886,8 +886,8 @@
                      .nodes(dataset.nodes)
                      .links(dataset.edges)
                      .size([width, height])
-                     .linkDistance([100])        // <-- New!
-                     .charge([-1000])            // <-- New!
+                     .linkDistance([50])        // <-- New!
+                     .charge([-300])            // <-- New!
                      .start();
 
                     var chart_entity_network = d3.select("body")

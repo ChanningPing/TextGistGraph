@@ -77,7 +77,7 @@ def visualizeSentences(): #visualize the paper by sentences
 def visualizeCollection():
     #print(paper_scene_list)
     network_data = collectionNetwork.generate_network(paper_scene_list)
-    return render_template('CollectionGraph.html', title=title, network_data = json.dumps(network_data))
+    return render_template('CollectionGraphNetwork.html', title=title, network_data = json.dumps(network_data))
 
 
 if __name__ == "__main__":

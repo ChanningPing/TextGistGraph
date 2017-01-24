@@ -89,14 +89,15 @@ def sentence_to_sequences(sentence, label, window_size):
     # rule-2: if the sentence contains as {} as,keep it, here we increase window size by 1 to accomodate the as...as as context
     indices = [i for i, item in enumerate(tagged_tuples) if item[0] == 'as' and item[1] == 'RB']
     for index in indices:
-        if (tagged_tuples[index + 1][1] == 'JJ' or tagged_tuples[index + 1][1] == 'RB') and \
-                        tagged_tuples[index + 2][
-                            0] == 'as' and tagged_tuples[index + 2][1] == 'IN':
-            sequence_object = []
-            sequence = get_sequence(tagged_tuples, index + 1, window_size + 1)
-            sequence_object.append(label)
-            sequence_object.append(sequence)
-            sequences.append(sequence_object)
+        if (index + 1) < len(tagged_tuples):
+            if tagged_tuples[index + 1][1] == 'JJ' or tagged_tuples[index + 1][1] == 'RB':
+                if (index + 2) < len(tagged_tuples):
+                    if  tagged_tuples[index + 2][0] == 'as' and tagged_tuples[index + 2][1] == 'IN':
+                        sequence_object = []
+                        sequence = get_sequence(tagged_tuples, index + 1, window_size + 1)
+                        sequence_object.append(label)
+                        sequence_object.append(sequence)
+                        sequences.append(sequence_object)
 
     # rule-3: if the sentence contains certain keyword, keep it
     for idx, item in enumerate(tagged_tuples):
@@ -179,7 +180,7 @@ def PrefixSpanCSR(sequences,seq_labels,TAU,min_confidence):
         #print('frequency='+str(result[1])+',positive number='+str(result[2])+',negative number='+str(result[3]))
         #print('positive sup='+str(positive_sup))
         #generate positive and negative rules respectively
-        if positive_sup >= min_sup and positive_confidence >= min_confidence: #positive rules
+        if positive_sup >= min_sup and positive_confidence >= min_confidence and result[0]: #positive rules
             rule = []
             rule.append(result[0])
             rule.append(result[1])
@@ -187,9 +188,11 @@ def PrefixSpanCSR(sequences,seq_labels,TAU,min_confidence):
             rule.append(positive_confidence)
             rule.append('1')
             rule.append(count)
+            print(result[0])
+            print('max index=' + str(count))
             count += 1
             CSR_rules.append(rule)
-        if negative_sup >= min_sup and negative_confidence >= min_confidence: #negative rules
+        if negative_sup >= min_sup and negative_confidence >= min_confidence and result[0]: #negative rules
             rule = []
             rule.append(result[0])
             rule.append(result[1])
@@ -197,6 +200,8 @@ def PrefixSpanCSR(sequences,seq_labels,TAU,min_confidence):
             rule.append(negative_confidence)
             rule.append('0')
             rule.append(count)
+            print(result[0])
+            print('max index=' + str(count))
             count += 1
             CSR_rules.append(rule)
 
@@ -225,7 +230,10 @@ def get_features(sentence, CSR_Rules):
         rule_string = ('_').join(word for word in rule[0])
         if rule_string in sentence_string or sentence_string in rule_string:
             index = rule[5]
+            #print('index='+str(index))
+            #print('feature length=' + str(len(features)))
             features[index] = 1
+
 
     return features
 

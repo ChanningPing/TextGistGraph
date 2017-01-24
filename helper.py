@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import nltk
 import json
 import codecs
@@ -323,10 +324,12 @@ def get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entitie
     co_occurrence_pairs_dict = {}
     for scene in sentence_scenes:
         if len(scene)>1: #if there are at least 2 entities in a sentence
-            for entity in scene:
+            for index, entity in enumerate(scene):
                 if entity not in co_occurrence_entity_id_dict:
-                    entity_info = {}
                     entity = str(entity)
+                    entity = entity.decode("utf-8")
+                    entity_info = {}
+                    print('entity='+ entity)
                     entity_info['name'] = characters_dict[entity]['name']
                     entity_info['frequency'] = characters_dict[entity]['frequency']
                     entity_info['id'] = unique_scene_id

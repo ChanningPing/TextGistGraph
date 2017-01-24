@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import itertools
 def generate_network (paper_scene_list):
     # 1. sort the paper and its scenes by year and month
@@ -11,6 +12,7 @@ def generate_network (paper_scene_list):
     paper_dict = {}
     curr_entity_id = 0
     curr_paper_id = 0
+    id_list = []
 
     for paper in paper_scene_list: # for each paper
         for index, scene in enumerate(paper['sentence_scenes']): # for each scene
@@ -23,12 +25,21 @@ def generate_network (paper_scene_list):
                         entity_info['id'] = curr_entity_id
                         entity_info['group'] = curr_paper_id
                         nodes_dict[entity] = entity_info
+                        id_list.append(curr_entity_id)
                         curr_entity_id += 1
                 # generate all pairs of entities of the scene
                 all_pairs = list(itertools.combinations(range(len(scene)), 2))  # get all possible index pairs for the characters in teh scene
                 for pair in all_pairs:
-                    source = nodes_dict[scene[pair[0]]]['id']
-                    target = nodes_dict[scene[pair[1]]]['id']
+                    key1 = scene[pair[0]]
+                    key1 = str(key1)
+                    key1 = key1.encode("utf-8")
+                    print(key1)
+                    key2 = scene[pair[1]]
+                    key2 = str(key2)
+                    key2 = key2.encode("utf-8")
+                    print(key2)
+                    source = nodes_dict[key1]['id']
+                    target = nodes_dict[key2]['id']
                     sentence = paper['sentence_scenes_info'][index]['text']
                     title = paper['title']
                     sentence_info = {}
@@ -38,16 +49,22 @@ def generate_network (paper_scene_list):
 
                     if key in edges_dict:
                         edges_dict[key]['value'] += 1
-
+                        edges_dict[key]['weight'] += 1
                         edges_dict[key]['sentences'].append(sentence_info)
+                        edges_dict[key]['pure_titles'].append(title) #used for path mouseover test relating to all relevant paper titles
+
                     else:
                         pair_entry = {}  # 0=source, 1=target, 2=source_target, 3=frequency
                         pair_entry['source'] = source  # source
                         pair_entry['target'] = target  # target
                         pair_entry['value'] = 1
+                        pair_entry['weight'] = 1
                         sentences = []
                         sentences.append(sentence_info)
                         pair_entry['sentences'] = sentences
+                        pure_titles = []
+                        pure_titles.append(title)
+                        pair_entry['pure_titles'] = pure_titles
                         edges_dict[key] = pair_entry
         paper_info = {}
         paper_info['id'] = curr_paper_id
@@ -57,10 +74,7 @@ def generate_network (paper_scene_list):
 
 
 
-    print('the node dict =')
-    print(nodes_dict)
-    print('the edge dict = ')
-    print(edges_dict)
+
 
     nodes = nodes_dict.values()
     edges = edges_dict.values()
@@ -68,8 +82,13 @@ def generate_network (paper_scene_list):
     # sort the nodes based on their ids (d3 force layout only track id based on the order of nodes appear, not by id you give)
     from operator import itemgetter
     nodes = sorted(nodes, key=itemgetter('id'))
+    print('the nodes =')
+    print(nodes)
+    print('the edge dict = ')
+    print(edges_dict)
     network_data = {}
     network_data['nodes'] = nodes
     network_data['links'] = edges
     network_data['papers'] = papers
+    network_data['id_list'] = id_list
     return network_data

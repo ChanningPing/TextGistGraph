@@ -80,12 +80,12 @@
         var data = {{ network_data|safe }};
 
         var i,
-            width = 3000,
-            height = 1000
+            width = 12000,
+            height = 12000
             transitionTime = 2500,
             spacing = 20,
             margin = 15,
-            nodeY = 500,
+            nodeY = 8000,
             nodeX = 100,
             nodes = data.nodes,
             links = data.links,
@@ -184,12 +184,18 @@
                 .on('mouseover', function(d){
                                  tip.show(d);
                                  //TODO: select all papers that cover this link
-                                 d3.selectAll("circle").style("fill", function (p) {return p.id == d.source || p.id == d.target ? "#f2734f"  : "lightgray"})
+                                 d3.selectAll("circle").style("fill", function (p) {
+                                     return d.pure_titles.indexOf(p.text)>=0 || (!p.text && (p.id == d.source || p.id == d.target) )  ? "#f2734f"  : "lightgray"
+                                 })
                                  d3.selectAll("path").style("fill", function (p) {return p == d ? "#3c6da8"  : "lightgray"})
-                                 d3.selectAll("text").style("fill", function (p) {return p.id == d.source || p.id == d.target ? "red"  : "black"})
+                                 d3.selectAll("text").style("fill", function (p) {
+                                     return d.pure_titles.indexOf(p.text) >=0|| (!p.text && (p.id == d.source || p.id == d.target) )  ? "red"  : "black"
+                                 })
+                                 //d3.selectAll("text").style("fill", function (p) {return p.id == d.source || p.id == d.target ? "red"  : "black"})
 
                     })
                 .on('mouseout', function(){
+                                //d3.select(".d3-tip").transition().delay(500)
                                 tip.hide();
                                 d3.selectAll("circle").style("fill", function(d,i) {return colors(d.group);})
                                 d3.selectAll("path").style("fill", "grey")
@@ -317,17 +323,18 @@
         }
 
                 //draw legend title
+
                 svg.selectAll('.legend_title')
                     .append("text")
                     .attr("x", 50)
-                    .attr("y", nodeY+20)
+                    .attr("y", 20)
                     .attr("text-anchor", "middle")
                     .style("font-size", "16px")
                     //.style("text-decoration", "underline")
                     .text("Paper color codes:");
 
                  //draw the legend
-                 var legend_y = nodeY +100;
+                 var legend_y = nodeY +150;
                  var legend_x = 20;
                  var legend_data = [];
                  for(var i=0;i<data.papers.length;i++){
@@ -367,6 +374,74 @@
                           .attr("y", 0)
                           .attr("dy", ".35em")
                           .text(function(d) { return d.text; });
+
+
+                //draw the network
+                /*
+                    var force = d3.layout.force()
+                     .nodes(nodes)
+                     .links(links)
+                     .size([width, height])
+                     .linkDistance([100])        // <-- New!
+                     .charge([-500])            // <-- New!
+                     .start();
+
+                    var chart_entity_network = d3.select("body")
+						.append("svg")
+						.attr("width", width)
+						.attr("height", height)
+                        .attr("x", 50)
+                        .attr("y", height)
+                         ;
+
+                    chart_entity_network.append("text")
+                            .attr("x", (width / 2))
+                            .attr("y", 13)
+                            .attr("text-anchor", "middle")
+                            .style("font-size", "16px")
+                            .text("Entity co-occurrence network (in terms of sentences)");
+
+                    var all_edges = chart_entity_network.selectAll("line")
+                        .data(links)
+                        .enter()
+                        .append("line")
+                        .style("stroke", "#ccc")
+                        .style("stroke-width", function(d){return d.value/2});
+                    var all_nodes = chart_entity_network.selectAll("circle")
+                        .data(nodes)
+                        .enter()
+                        .append("circle")
+                            .attr("r", function(d){return Math.sqrt(d.value)})
+                            .style("fill", '#cceeff')
+                            .style("stroke", "#3c6da8")
+                            .style("stroke-width", 5)
+                            .call(force.drag);
+
+                    var nodelabels = chart_entity_network.selectAll(".nodelabel")
+                       .data(nodes)
+                       .enter()
+                       .append("text")
+                       .attr({"x":function(d){return d.x;},
+                              "y":function(d){return d.y;},
+                              "class":"nodelabel",
+                              "stroke":"black"})
+                       .text(function(d){return d.nodeName;});
+
+                    force.on("tick", function() {
+
+                        all_edges.attr("x1", function(d) { return d.source.x; })
+                             .attr("y1", function(d) { return d.source.y; })
+                             .attr("x2", function(d) { return d.target.x; })
+                             .attr("y2", function(d) { return d.target.y; });
+
+                        all_nodes.attr("cx", function(d) { return d.x; })
+                             .attr("cy", function(d) { return d.y; });
+
+                        nodelabels.attr("x", function(d) { return d.x; })
+                              .attr("y", function(d) { return d.y; });
+
+                     });
+                     */
 
     </script>
 
