@@ -181,8 +181,11 @@
                 .attr('height', height)
                 .on("click", function(d){
                     console.log('clicked the blank space!');
+                    selected_characters = []
                     svg.selectAll('.link')
-                            .style('opacity',1);
+                            .style('opacity',1)
+                            .style("stroke", '#3c6da8')           // colour the line
+                            .style("stroke-width", 2);
 
                 })
 
@@ -411,6 +414,20 @@
                                              return 0.2;
                                          }
                                      })
+                                     .style("stroke", function(d){
+                                             if (d.source.character.id in id_map || d.target.character.id in id_map) {
+                                                 return '#df2929';
+                                             }else{
+                                                 return '#3c6da8';
+                                             }
+                                         })           // colour the line
+                                    .style("stroke-width", function(d){
+                                             if (d.source.character.id in id_map || d.target.character.id in id_map) {
+                                                 return 3;
+                                             }else{
+                                                 return 2;
+                                             }
+                                    })
                             document.getElementById(d.id).focus();
                             //document.querySelector('#'+d.id).scrollIntoView({
                                 //behavior: 'smooth'
@@ -468,6 +485,9 @@
                             d3.event.stopPropagation();
                 });
 
+            //prepare highlighted nodes set
+            selected_characters = []
+
             // Draw intro nodes
             svg.selectAll('.intro').data(narrative.introductions())
                 .enter().call(function(s){
@@ -479,15 +499,37 @@
                         })
                         .on("click", function(d){
                             console.log('click the intro nodes!');
+                             if (selected_characters.indexOf(d.character.id) >= 0) {
+                                //do something
+                            }else{
+                                selected_characters.push(d.character.id)
+                            }
+                            console.log('click the intro nodes!');
                             svg.selectAll('.link')
                                      .style('opacity',function(d1){
-                                         if (d1.source.character.id == d.character.id ||
-                                            d1.target.character.id == d.character.id) {
+                                         if (selected_characters.indexOf(d1.source.character.id)>=0 ||
+                                             selected_characters.indexOf(d1.target.character.id)>=0) {
                                              return 1;
                                          }else{
                                              return 0.2;
                                          }
                                      })
+                                    .style("stroke", function(d1){
+                                             if (selected_characters.indexOf(d1.source.character.id)>=0 ||
+                                             selected_characters.indexOf(d1.target.character.id)>=0) {
+                                                 return '#df2929';
+                                             }else{
+                                                 return '#3c6da8';
+                                             }
+                                         })           // colour the line
+                                    .style("stroke-width", function(d1){
+                                             if (selected_characters.indexOf(d1.source.character.id)>=0 ||
+                                             selected_characters.indexOf(d1.target.character.id)>=0) {
+                                                 return 3;
+                                             }else{
+                                                 return 2;
+                                             }
+                                    })
                             d3.event.stopPropagation();
                         });
 

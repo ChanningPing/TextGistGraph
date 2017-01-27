@@ -73,12 +73,17 @@ def visualizeSentences(): #visualize the paper by sentences
     return render_template('SentenceGistGraph.html', name=name, title=title, final_result=json.dumps(final_result))
 
 
-@app.route('/visualizeCollection', methods=['POST'])
-def visualizeCollection():
+@app.route('/visualizeCollectionNetwork', methods=['POST'])
+def visualizeCollectionNetwork():
     #print(paper_scene_list)
     network_data = collectionNetwork.generate_network(paper_scene_list)
     return render_template('CollectionGraphNetwork.html', title=title, network_data = json.dumps(network_data))
 
+@app.route('/visualizeCollectionArcDiagram', methods=['POST'])
+def visualizeCollectionArcDiagram():
+    #print(paper_scene_list)
+    network_data = collectionNetwork.generate_network(paper_scene_list)
+    return render_template('CollectionGraph.html', title=title, network_data = json.dumps(network_data))
 
 if __name__ == "__main__":
 
