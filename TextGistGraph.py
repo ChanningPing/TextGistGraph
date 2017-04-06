@@ -7,6 +7,7 @@ import time
 import helper
 import string
 import collectionNetwork
+from settings import APP_STATIC
 
 
 app = Flask(__name__)
@@ -63,6 +64,8 @@ def visualizeSingleDoc():
 
 
 
+
+
     # 4. visualize the paper by paragraph
     name = file_title + '_paragraphs'  # json data file name
     return render_template('GistGraph.html', name=name, title=title,final_result=json.dumps(final_result))
@@ -77,6 +80,10 @@ def visualizeSentences(): #visualize the paper by sentences
 def visualizeCollectionNetwork():
     #print(paper_scene_list)
     network_data = collectionNetwork.generate_network(paper_scene_list)
+    #especially for test
+    #with open(APP_STATIC + '/data/' +'All_LDA_Paper_network.json') as data_file:
+        #network_data = json.load(data_file)
+
     return render_template('CollectionGraphNetwork.html', title=title, network_data = json.dumps(network_data))
 
 @app.route('/visualizeCollectionArcDiagram', methods=['POST'])

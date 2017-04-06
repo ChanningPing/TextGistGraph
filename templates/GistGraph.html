@@ -16,9 +16,9 @@
 		stroke: #000;
         pointer-events: all;
 	}
-    rect:hover {
+    /*rect:hover {
       fill: orangered ;
-    }
+    }*/
 
     .d3-tip {
       line-height: 1;
@@ -116,7 +116,7 @@
     div.scroll {
         padding-top: 2%;
         padding-bottom: 2%;
-        padding-left: 20%;
+        padding-left: 2%;
         margin-bottom: 2%;
         background-color: #cceeff;
         height: 300px;
@@ -128,7 +128,7 @@
 
 <body>
     <h1>{{ title }}</h1>
-    <div id='textView_div' rows="4" cols="100" class = 'scroll'>
+    <div id='textView_div' rows="4" cols="170" class = 'scroll'>
         <pre id="textViewer" >
              <script>
 
@@ -146,6 +146,7 @@
              </script>
         </pre>
     </div>
+    <p id="chart_test"></p>
 
 
 	<script src="static/js/es5-shim.js"></script>
@@ -153,7 +154,7 @@
     <script src="static/js/d3.min.js"></script>
     <script src="static/js/d3.tip.js"></script>
 	<script src="static/js/narrative.js"></script>
-
+	<script src="static/js/fisheye.js"></script>
 
 	<script>
         console.log('{{ name }}');
@@ -171,6 +172,11 @@
             height = 1400;
             labelSize = [150,15];
 
+
+
+
+
+
             // The container element (this is the HTML fragment);
             svg = d3.select("body").append('svg')
                 .attr('id', 'narrative-chart')
@@ -181,13 +187,24 @@
                     console.log('clicked the blank space!');
                     svg.selectAll('.link')
                             .style('opacity',1)
-                            .style("stroke", '#3c6da8')           // colour the line
-                            .style("stroke-width", 2)
+                            //.style("stroke", '#3c6da8')           // colour the line
+                            .style("stroke-width", function(d) { return (d.character.frequency / resize_rate); })
                             ;
 
                 })
 
             ;
+            //======================= fisheye
+
+                    var fisheye = d3.fisheye.circular()
+                        .radius(200)
+                        .distortion(2);
+                    var xScale = d3.fisheye.scale(d3.scale.log).domain([1,width]).range([0, width]),
+                        yScale = d3.fisheye.scale(d3.scale.linear).domain([1,height]).range([height, 0])
+                    var xScale = d3.fisheye.scale(d3.scale.identity).domain([0, width]).focus(width/2),
+                        yScale = d3.fisheye.scale(d3.scale.identity).domain([0, height]).focus(height/2);
+            //=======================
+
 
             // Calculate the actual width of every character label.
             scenes.forEach(function(scene){
@@ -247,6 +264,12 @@
 
             //prepare drag
             var paths = narrative.links();//store the path information into global variable, modifiable.
+            max_frequency = 0;
+            for(var i=0;i<paths.length;i++){
+                if(max_frequency < paths[i].character.frequency)  max_frequency = paths[i].character.frequency
+            }
+            resize_rate = max_frequency / 5;
+
 
             var drag = d3.behavior.drag()
                     .on('dragstart',function(){
@@ -348,7 +371,7 @@
 
 
             // Draw the scenes
-            svg.selectAll('.scene').data(scenes).enter()
+            var scenes = svg.selectAll('.scene').data(scenes).enter()
                 .append('g').attr('class', 'scene')
                     .call(drag)
                     .attr('transform', function(d){
@@ -408,18 +431,18 @@
                                              return 0.2;
                                          }
                                      })
-                                     .style("stroke", function(d){
-                                             if (d.source.character.id in id_map || d.target.character.id in id_map) {
-                                                 return '#df2929';
-                                             }else{
-                                                 return '#3c6da8';
-                                             }
-                                         })           // colour the line
+                                     //.style("stroke", function(d){
+                                             //if (d.source.character.id in id_map || d.target.character.id in id_map) {
+                                                 //return '#df2929';
+                                             //}else{
+                                                 //return '#3c6da8';
+                                             //}
+                                         //})           // colour the line
                                     .style("stroke-width", function(d){
                                              if (d.source.character.id in id_map || d.target.character.id in id_map) {
-                                                 return 3;
+                                                 return function(d) { return (d.character.frequency / resize_rate); };
                                              }else{
-                                                 return 2;
+                                                 return function(d) { return (d.character.frequency / resize_rate); };
                                              }
                                     })
 
@@ -450,8 +473,9 @@
 
 
 
+
             // Draw appearances
-              svg.selectAll('.scene').selectAll('.appearance').data(function(d){
+             svg.selectAll('.scene').selectAll('.appearance').data(function(d){
                 return d.appearances;
             }).enter().append('circle')
                 .attr('cx', function(d){
@@ -471,6 +495,14 @@
                 })
                 ;
 
+            // prepare colors for all characters
+            length = paths.length
+            color = d3.scale.linear().domain([1,length])
+            .interpolate(d3.interpolateHcl)
+            .range([d3.rgb("#007AFF"), d3.rgb('#FFF500')]);
+            for (var i = 0; i < length; i++) {
+                paths[i].character.color = color(i);
+            }
             // Draw links
             svg.selectAll('.link').data(paths).enter()
                 .append('path')
@@ -480,7 +512,11 @@
                 .attr('d', narrative.link())
                 .on("click", function(d){
                             d3.event.stopPropagation();
-                });
+                })
+                .style("stroke-width", function(d) { return (d.character.frequency / resize_rate); })
+                .style("opacity",1)
+                .style("stroke", function(d){return d.character.color;})
+            ;
             //prepare highlighted nodes set
             selected_characters = []
 
@@ -510,20 +546,20 @@
                                              return 0.2;
                                          }
                                      })
-                                    .style("stroke", function(d1){
-                                             if (selected_characters.indexOf(d1.source.character.id)>=0 ||
-                                             selected_characters.indexOf(d1.target.character.id)>=0) {
-                                                 return '#df2929';
-                                             }else{
-                                                 return '#3c6da8';
-                                             }
-                                         })           // colour the line
+                                    //.style("stroke", function(d1){
+                                             //if (selected_characters.indexOf(d1.source.character.id)>=0 ||
+                                             //selected_characters.indexOf(d1.target.character.id)>=0) {
+                                                 //return '#df2929';
+                                             //}else{
+                                                 //return '#3c6da8';
+                                             //}
+                                         //})           // colour the line
                                     .style("stroke-width", function(d1){
                                              if (selected_characters.indexOf(d1.source.character.id)>=0 ||
                                              selected_characters.indexOf(d1.target.character.id)>=0) {
-                                                 return 3;
+                                                 return d1.character.frequency / resize_rate;
                                              }else{
-                                                 return 2;
+                                                 return d1.character.frequency /resize_rate ;
                                              }
                                     })
                             d3.event.stopPropagation();
@@ -647,7 +683,59 @@
                             document.getElementById("textView_div").scrollTop -= 40;
                         })
                     ;
+            //======================fisheye test
+                svg.on("mousemove", function() {
+                  var mouse = d3.mouse(this);
+                  xScale.distortion(5).focus(mouse[0]);
+                  yScale.distortion(5).focus(mouse[1]);
 
+                  d3.select(this).selectAll('.scene') //change scene rect
+                      .attr('transform', function(d){
+                            return 'translate('+[xScale(d.x),d.y]+')'; //change scene position
+                        })
+                  d3.select(this).selectAll('.ticks') //change comparative sentence ticks
+                       .attr('transform', function(d){
+                            //console.log('the ticks-x ='+d.paragraph_info.x +'after rescale=' + xScale(d.paragraph_info.x))
+                            return 'translate('+[xScale(d.paragraph_info.x),d.paragraph_info.y]+')';
+                        })
+                  d3.select(this).selectAll('.label')//change chapter line and text
+                       .attr('transform', function(d){
+                            //console.log('the chapter-x =' + d.x_original + 'afte rescale= ' + xScale(d.x_original))
+                            return 'translate('+[xScale(d.x_original),0]+')';
+                        })
+                  d3.select(this).selectAll('.intro') //change intro
+                       .attr('transform', function(d){
+                            //console.log('the chapter-x =' + d.x_original + 'afte rescale= ' + xScale(d.x_original))
+                            return 'translate('+[xScale(d.x),d.y]+')';
+                        })
+                  d3.select(this).selectAll('.link')
+                      .attr('d',function(d){
+                          console.log('d.d='+ d.d);
+                          return d.d;
+                      })
+
+
+
+                      })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                 });
+    // ======================
 
 
             //draw chapter
@@ -665,28 +753,32 @@
             for(var i=0;i<chapters.length;i++){
                 //console.log('inital final x='+chapters[i].x);
                 //console.log('final start='+chapterStarts[i]);
-                chapters[i].x = scale * chapters[i].paragraph_rank + labelSize[0];
-                console.log('final x='+chapters[i].x);
+                chapters[i].x_original = scale * chapters[i].paragraph_rank + labelSize[0];
+                console.log('final x='+chapters[i].x_original);
             }
             //draw lines based on re-calculated x of chapter lines
+            var label = svg.selectAll(".label").data(chapters).enter()
+                    .append('g').attr('class', 'label')
+                    .attr('transform', function(d){
+                            var x,y;
+                            x = Math.round(d.x_original)+0.5;
+                            y = 0;
+                            return 'translate('+[x,y]+')';
+                        })
+            label.append("svg:line")
 
-
-
-
-            var label = svg.selectAll(".labels")
-                  .data(chapters)
-                  .enter();
-
-                label.append("svg:line")
-                        .attr("x1", function(d){ return d.x;})
-                        .attr("y1", 0)
-                        .attr("x2", function(d){ return d.x;})
-                        .attr("y2", chapterLineHeight)
+                        //.attr("x1", function(d){ return d.x;})
+                         .attr("x1", 0)
+                         .attr("y1", 0)
+                        //.attr("x2", function(d){ return d.x;})
+                         .attr("x2", 0)
+                         .attr("y2", chapterLineHeight)
                     .style("stroke-width", 0.5)
                     .style("stroke", "grey")
                     .style("fill", "none");
 
-                label.append("text")
+            label.append("text")
+
                  //.attr("x", function(d){ return d.x;})
                  //.attr("y", chapterLineHeight)
                  .style("fill", "grey")
@@ -694,10 +786,13 @@
                  //.attr("transform", "rotate(315)")
                  //.attr("dy", ".35em")           // set offset y position
                  .attr("text-anchor", "end") // set anchor y justification
-                 .attr("transform", function(d){
-                     return "translate(" + d.x + "," + chapterLineHeight+") rotate(-30)";
-                     //return "translate(20,0) rotate(-45)";
-                 })
+                    .attr("x",0)
+                    .attr("y",chapterLineHeight)
+                 //.attr("transform", function(d){
+                     //return "translate(" + d.x + "," + chapterLineHeight+") rotate(-30)";
+                     //return "translate(" + 0 + "," + chapterLineHeight+") rotate(-30)";
+
+                // })
                  //.attr("transform", "rotate(5)")
                  .text(function(d){return d.text;});
 
@@ -755,7 +850,6 @@
                           .attr("y", 5)
                           .attr("dy", ".35em")
                           .text(function(d) { return d.text; });
-
 
 
 
@@ -895,7 +989,7 @@
                      .nodes(dataset.nodes)
                      .links(dataset.edges)
                      .size([width, height])
-                     .linkDistance([50])        // <-- New!
+                     .linkDistance([100])        // <-- New!
                      .charge([-300])            // <-- New!
                      .start();
 
@@ -903,7 +997,12 @@
 						.append("svg")
 						.attr("width", width)
 						.attr("height", height);
+//======================= fisheye
 
+                    var fisheye = d3.fisheye.circular()
+                        .radius(200)
+                        .distortion(2);
+//=======================
                     chart_entity_network.append("text")
                             .attr("x", (width / 2))
                             .attr("y", 13)
@@ -921,10 +1020,11 @@
                         .data(dataset.nodes)
                         .enter()
                         .append("circle")
-                            .attr("r", function(d){return Math.sqrt(d.frequency)})
+                            .attr("r", function(d){return Math.sqrt(d.frequency)*5})
                             .style("fill", '#cceeff')
                             .style("stroke", "#3c6da8")
                             .style("stroke-width", 5)
+                            .style("opacity",0.5)
                             .call(force.drag);
                     var nodelabels = chart_entity_network.selectAll(".nodelabel")
                        .data(dataset.nodes)
@@ -950,6 +1050,21 @@
                               .attr("y", function(d) { return d.y; });
 
                      });
+
+//======================fisheye test
+                chart_entity_network.on("mousemove", function() {
+                  fisheye.focus(d3.mouse(this));
+
+                  nodes.each(function(d) { d.fisheye = fisheye(d); })
+                      .attr("cx", function(d) { return d.fisheye.x; })
+                      .attr("cy", function(d) { return d.fisheye.y; })
+                      ;
+                  edges.attr("x1", function(d) { return d.source.fisheye.x; })
+                      .attr("y1", function(d) { return d.source.fisheye.y; })
+                      .attr("x2", function(d) { return d.target.fisheye.x; })
+                      .attr("y2", function(d) { return d.target.fisheye.y; });
+                });
+// ======================
 
 
 

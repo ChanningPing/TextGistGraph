@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>jLouvain Example</title>
+    <title>Entity Community Network</title>
     <script src="static/js/d3.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="static/js/jLouvain.js"></script>
     <style>
@@ -35,8 +35,8 @@
       var community = jLouvain().nodes(node_data).edges(edge_data);
 
       //Drawing code
-      var width = 1800;
-      var height = 1800;
+      var width = 3600;
+      var height = 3600;
       var original_node_data = d3.entries(node_data);
       var max_weight = d3.max(edge_data, function(d){ return d.weight});
       var weight_scale = d3.scale.linear().domain([0, max_weight]).range([1,5]);
@@ -50,12 +50,14 @@
           original_node_data[d].community = community_assignment_result[d];
           max_community_number = max_community_number < community_assignment_result[d] ? community_assignment_result[d]: max_community_number;
           original_node_data[d].label = data.nodes[d].nodeName;
+          original_node_data[d].frequency = data.nodes[d].frequency;
+
       });
       var color = d3.scale.category20().domain(d3.range([0, max_community_number]));
 
       var force = d3.layout.force()
-                  .charge(-300)
-                  .linkDistance(100)
+                  .charge(-1000)
+                  .linkDistance(150)
                   .size([width, height]);
 
       var svg = d3.select("body").append("svg")
@@ -88,15 +90,17 @@
         ;
 
       node.append("circle")
-        .attr("r", 10)
+        .attr("r", function(d){return Math.sqrt(d.frequency)*6;})
         .style('fill', function (d) {
                       return color(d.community)
                   })
+        .style("opacity", 0.5)
         .call(force.drag);
 
       node.append("text")
         .attr("x", 12)
         .attr("dy", ".35em")
+        .style("font-size", function(d) {return Math.sqrt(d.frequency)*6;})
         .text(function (d) { return d.label; });
 
 

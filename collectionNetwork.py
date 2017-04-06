@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import itertools
+from settings import APP_STATIC
+import json
 def generate_network (paper_scene_list):
     # 1. sort the paper and its scenes by year and month
     paper_scene_list.sort(key=lambda x: (x['year'], x['month']))
@@ -24,9 +26,12 @@ def generate_network (paper_scene_list):
                         entity_info['nodeName'] = entity
                         entity_info['id'] = curr_entity_id
                         entity_info['group'] = curr_paper_id
+                        entity_info['frequency'] = 1
                         nodes_dict[entity] = entity_info
                         id_list.append(curr_entity_id)
                         curr_entity_id += 1
+                    else:
+                        nodes_dict[entity]['frequency'] += 1
                 # generate all pairs of entities of the scene
                 all_pairs = list(itertools.combinations(range(len(scene)), 2))  # get all possible index pairs for the characters in teh scene
                 for pair in all_pairs:
@@ -91,4 +96,10 @@ def generate_network (paper_scene_list):
     network_data['links'] = edges
     network_data['papers'] = papers
     network_data['id_list'] = id_list
+
+
+    file_name = 'whole_network'
+    with open(APP_STATIC + '/data/' + file_name + '.json', 'w') as fp:
+        json.dump(network_data, fp)
+
     return network_data

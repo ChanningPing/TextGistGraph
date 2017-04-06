@@ -12,13 +12,14 @@ from collections import defaultdict
 from nltk.stem.snowball import SnowballStemmer
 from sklearn.naive_bayes import MultinomialNB
 import numpy as np
+from sklearn.model_selection import cross_val_score
 
 #global variables setting
 reload(sys)
 sys.setdefaultencoding('utf8')
 stemmer = SnowballStemmer("english")
 
-window_size = 3
+window_size = 4
 TAU = 0.1
 min_confidence = 0.6
 frequent_patterns = []
@@ -73,6 +74,7 @@ def sentence_to_sequences(sentence, label, window_size):
     sentence = sentence.translate(replace_punctuation)
     # 2. POS tag the sentence
     tagged_tuples = nltk.pos_tag(nltk.word_tokenize(sentence.lower()))
+    print(tagged_tuples)
     # 3. define the sequence object
     sequences = []
     # 4. 4 conditions that satisfy the comparative candidate rule
@@ -292,6 +294,7 @@ def train_comparative(file_name):
    # with open(file_name, 'wb') as dump:
         #dump.write(json.dumps(CSR_Rules))
     for rule in CSR_Rules:
+        print(rule)
         if not rule[0]:
             CSR_Rules.remove(rule)
             break
@@ -301,8 +304,10 @@ def train_comparative(file_name):
     feature_matrix = []
     for idx, sentence in enumerate(sentences):
         features = get_features(sentence, CSR_Rules)#sentence include: label, sentence,sequences
-        print('in training phase, length of the features' + str(len(features)))
+        #print('in training phase, length of the features' + str(len(features)))
+        print(sentence)
         features.append(sentence['label'])
+        print(features)
         feature_matrix.append(features)
     #print(rule_dict)
     #print(feature_matrix)
@@ -310,12 +315,21 @@ def train_comparative(file_name):
     # train the Naive Bayes classifier
 
     clf = MultinomialNB()
+    #from sklearn import svm
+    #clf = svm.SVC()
+    #from sklearn.linear_model import LogisticRegression
+    #clf = LogisticRegression(fit_intercept = False, C = 1e9)
     data = np.array(feature_matrix)
     data_X = data[:, 0: len(CSR_Rules)].astype(np.float)
     data_Y = data[:, len(CSR_Rules)]
     y_pred = clf.fit(data_X, data_Y).predict(data_X)
     #print(y_pred)
     print("Number of mislabeled points out of a total %d points : %d" % (data_X.shape[0], (data_Y != y_pred).sum()))
+
+    # cross-validation
+    scores = cross_val_score(clf, data_X, data_Y, cv=5)
+    print('cross validation score...' + str(scores))
+    print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
     # save the model to disk
     file_name = APP_STATIC + '/nlp/CSR/classifier.sav'
@@ -374,7 +388,7 @@ def predict_comparative(sentence,read_rule_dictionary, loaded_Bayes_classifier )
 
     # 3. generate the sequence
     sequences = sentence_to_sequences(sentence, 0, window_size)
-    print(sequences)
+    #print(sequences)
 
     # 4. generate the features
     sentence_object = {}
@@ -399,7 +413,7 @@ def predict_comparative(sentence,read_rule_dictionary, loaded_Bayes_classifier )
     features = features.reshape(1, -1)
     class_result = loaded_Bayes_classifier.predict(features)
     class_label = class_result[0]
-    print(class_label)
+    #print(class_label)
     return class_label
 
 
@@ -408,13 +422,13 @@ def predict_comparative(sentence,read_rule_dictionary, loaded_Bayes_classifier )
 
 def main():
     #train process
-    #file_name = APP_STATIC + '/nlp/corpus/ComparativeTrainCorpus.txt'
+    file_name = APP_STATIC + '/nlp/corpus/ComparativeTrainCorpus.txt'
     #train_comparative(file_name)
 
     #predict process
     #rule_dict_file_name = APP_STATIC + '/nlp/CSR/CSR_rules.csv'
     #classifier_file_name = APP_STATIC + '/nlp/CSR/classifier.sav'
-    sentence = 'Our model shows an improvement of about a significant improvement over previous state-of-the-art in both MAP and MRR when training on TRAIN and TRAIN-ALL'
+    #sentence = 'Our model shows an improvement of about a significant improvement over previous state-of-the-art in both MAP and MRR when training on TRAIN and TRAIN-ALL'
 
 
 

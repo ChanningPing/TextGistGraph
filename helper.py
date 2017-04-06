@@ -60,6 +60,7 @@ def get_structured_content (content, c):
         ss = segmenter.tokenize(p)
         for j, s in enumerate(ss):
             sentence = {}
+            #print(s)
 
 
             if s[0:1] == c and len(s) < max_heading_length:
@@ -364,6 +365,7 @@ def get_entity_cooccurrence_in_paragraph(structured_content,user_defined_entitie
     co_occurrence_network['edges'] = edges
     print(co_occurrence_network)
     final_result['co_occurrence_network'] = co_occurrence_network
+
 
 
 
