@@ -9,7 +9,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Temporal entity evolution view
 
 What things you need to install the software and how to install them
-![alt text](https://github.com/ChanningPing/TextGistGraph/blob/master/evolution.jp2 "evolution view")
+![alt text](https://github.com/ChanningPing/TextGistGraph/blob/master/fisheyed_storyline.png "evolution view")
 
 ### Entity Community view
 
