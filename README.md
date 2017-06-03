@@ -8,16 +8,19 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Temporal entity evolution view
 
-What things you need to install the software and how to install them
-![alt text](https://github.com/ChanningPing/TextGistGraph/blob/master/fisheyed_storyline.png "evolution view")
+The temporal entity evolution view is designed to visualize how entities in an entire document collection evolve over time. 
+![alt text](https://github.com/ChanningPing/TextGistGraph/blob/master/Figures/evolution.png "evolution view")
 
 ### Entity Community view
 
-What things you need to install the software and how to install them
+The entity community view is designed to visualize the communities within the co-occurrence network of entities across the collection. 
+![alt text](https://github.com/ChanningPing/TextGistGraph/blob/master/Figures/network%20local.png "evolution view")
 
-```
-Give examples
-```
+## Exploration of a single document 
+
+We design two views within the “text-storyline cross-reference” view, namely, the “Storyline view” and “Text view”. The collaboration between the two views will help users to navigate through the full text following accumulative clues in the storyline viewer.
+The storyline viewer of a research paper comprises of entities (characters) and sections/paragraphs/sentences (scenes). The storyline should be read from left to right, as its development in the research paper. The fisheye view enable users to expand and examine storyline details at any specific part of a document. 
+![alt text](https://github.com/ChanningPing/TextGistGraph/blob/master/Figures/fisheyed_storyline.png "evolution view")
 
 ### Installing
 
