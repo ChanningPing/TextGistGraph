@@ -2,11 +2,16 @@
 
 LitStoryTeller is an interactive system for visually exploring the semantic structure of a scientific article. The proposed system borrows a metaphor from screen play, and visualizes the storyline of a scientific paper by arranging its characters (scientific concepts or terminologies) and scenes (paragraphs/sentences) into a progressive and interactive storyline. 
 
-## Getting Started
+## Exploration of a document collection
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### Prerequisites
+### Temporal entity evolution view
+
+What things you need to install the software and how to install them
+![alt text](https://github.com/ChanningPing/TextGistGraph/blob/master/evolution.jp2 "evolution view")
+
+### Entity Community view
 
 What things you need to install the software and how to install them
 
